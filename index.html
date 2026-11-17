@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>网页是什么</title>
+<meta name="description" content="给零基础的人：用一个网页讲明白什么是网页，以及怎么用 F12 开发者工具（元素、控制台、网络、源代码、应用、性能）看懂它。">
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --surface: #ffffff;
+    --surface-2: #f3f1ec;
+    --text: #1f2328;
+    --muted: #5f6570;
+    --border: #e3dfd6;
+    --accent: #2f6fde;
+    --accent-soft: #e6eefc;
+    --green: #1a7f37;
+    --green-soft: #e3f4e8;
+    --orange: #b35900;
+    --orange-soft: #fdf0e1;
+    --red: #c4302b;
+    --red-soft: #fce8e7;
+    --purple: #7a3fc4;
+    --purple-soft: #f1e9fb;
+    --code-bg: #1e1f24;
+    --code-text: #e6e6e6;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15161a; --surface: #1d1f24; --surface-2: #25282e; --text: #e8e9ec; --muted: #a0a5ae;
+      --border: #33363d; --accent: #6ea0ff; --accent-soft: #1f2a40; --green: #5cc97a; --green-soft: #1b2e22;
+      --orange: #f0a35a; --orange-soft: #33261a; --red: #ff7b72; --red-soft: #3a1f1f; --purple: #b98cf5;
+      --purple-soft: #2b2140; --code-bg: #0f1013; --code-text: #e6e6e6; --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15161a; --surface: #1d1f24; --surface-2: #25282e; --text: #e8e9ec; --muted: #a0a5ae;
+    --border: #33363d; --accent: #6ea0ff; --accent-soft: #1f2a40; --green: #5cc97a; --green-soft: #1b2e22;
+    --orange: #f0a35a; --orange-soft: #33261a; --red: #ff7b72; --red-soft: #3a1f1f; --purple: #b98cf5;
+    --purple-soft: #2b2140; --code-bg: #0f1013; --code-text: #e6e6e6; --shadow: none;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    font-size: 17px; line-height: 1.8;
+  }
+  a { color: var(--accent); }
+  code, kbd, pre, textarea.code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace; }
+  code { background: var(--surface-2); padding: .1em .4em; border-radius: 5px; font-size: .9em; }
+  kbd {
+    display: inline-block; padding: .05em .5em; border: 1px solid var(--border); border-bottom-width: 3px;
+    border-radius: 6px; background: var(--surface); font-size: .85em; line-height: 1.5; white-space: nowrap;
+  }
+  pre {
+    background: var(--code-bg); color: var(--code-text); padding: 14px 16px; border-radius: 10px;
+    overflow-x: auto; font-size: 14px; line-height: 1.6; margin: 12px 0;
+  }
+  pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
+  .t-tag { color: #7ec4ff; } .t-attr { color: #ffcb6b; } .t-str { color: #a5e07a; } .t-com { color: #8a8f98; } .t-key { color: #ff9ac1; }
+
+  /* layout */
+  .topbar {
+    position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px); border-bottom: 1px solid var(--border);
+  }
+  .topbar-inner { max-width: 1120px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
+  .brand { font-weight: 700; text-decoration: none; color: var(--text); white-space: nowrap; }
+  .progress { flex: 1; height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+  .progress > div { height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+  .theme-btn { border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 8px; padding: 4px 10px; cursor: pointer; font-size: 14px; }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; display: grid; grid-template-columns: 220px minmax(0,1fr); gap: 40px; }
+  nav.toc { position: sticky; top: 64px; align-self: start; padding: 24px 0; max-height: calc(100vh - 64px); overflow-y: auto; }
+  nav.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+  nav.toc li { counter-increment: toc; }
+  nav.toc a {
+    display: block; padding: 5px 10px; border-radius: 8px; color: var(--muted); text-decoration: none; font-size: 14px; line-height: 1.5;
+  }
+  nav.toc a::before { content: counter(toc) ". "; opacity: .6; }
+  nav.toc a.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  nav.toc .toc-group { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin: 14px 10px 4px; }
+  main { min-width: 0; padding-bottom: 80px; }
+
+  @media (max-width: 860px) {
+    .wrap { grid-template-columns: minmax(0,1fr); gap: 0; }
+    nav.toc { display: none; }
+  }
+
+  .hero { padding: 56px 0 24px; }
+  .hero h1 { font-size: clamp(30px, 6vw, 46px); line-height: 1.25; margin: 0 0 12px; letter-spacing: -.01em; }
+  .hero p.lead { font-size: 19px; color: var(--muted); margin: 0 0 20px; max-width: 40em; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; }
+  .badge { font-size: 13px; padding: 3px 10px; border-radius: 99px; background: var(--surface-2); color: var(--muted); }
+
+  section.lesson { padding-top: 40px; scroll-margin-top: 60px; }
+  section.lesson > h2 { font-size: 28px; line-height: 1.35; margin: 0 0 6px; display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+  section.lesson > h2 .num { font-size: 15px; color: var(--accent); font-weight: 700; background: var(--accent-soft); padding: 2px 10px; border-radius: 99px; }
+  section.lesson > .sub { color: var(--muted); margin: 0 0 18px; }
+  h3 { font-size: 20px; margin: 28px 0 8px; }
+  hr.part { border: none; border-top: 1px dashed var(--border); margin: 56px 0 0; }
+  .part-title { margin: 24px 0 0; font-size: 14px; letter-spacing: .1em; color: var(--muted); }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: var(--shadow); margin: 16px 0; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+  .note { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 12px 16px; border-radius: 0 10px 10px 0; margin: 16px 0; }
+  .note.warn { border-color: var(--orange); background: var(--orange-soft); }
+  .note.danger { border-color: var(--red); background: var(--red-soft); }
+  .note.ok { border-color: var(--green); background: var(--green-soft); }
+  .note strong:first-child { display: block; margin-bottom: 2px; }
+
+  .task { border: 2px dashed var(--accent); border-radius: 14px; padding: 16px 18px; margin: 18px 0; background: var(--surface); }
+  .task > .task-head { font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+  .task ol { margin: 6px 0; padding-left: 1.3em; }
+
+  button.btn {
+    font: inherit; font-size: 15px; border: 1px solid var(--border); background: var(--surface); color: var(--text);
+    padding: 7px 14px; border-radius: 9px; cursor: pointer; margin: 4px 6px 4px 0; transition: transform .05s, background .15s;
+  }
+  button.btn:hover { background: var(--surface-2); }
+  button.btn:active { transform: translateY(1px); }
+  button.btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  button.btn.primary:hover { filter: brightness(1.08); }
+  button.btn.red { color: var(--red); border-color: color-mix(in srgb, var(--red) 40%, var(--border)); }
+  button.btn.green { color: var(--green); border-color: color-mix(in srgb, var(--green) 40%, var(--border)); }
+  button.btn.orange { color: var(--orange); border-color: color-mix(in srgb, var(--orange) 40%, var(--border)); }
+
+  input[type=text], textarea {
+    font: inherit; width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); color: var(--text);
+  }
+  textarea.code { font-size: 14px; line-height: 1.6; min-height: 220px; resize: vertical; background: var(--code-bg); color: var(--code-text); border-color: var(--code-bg); }
+
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  .table-wrap { overflow-x: auto; margin: 12px 0; border: 1px solid var(--border); border-radius: 12px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: var(--surface-2); font-weight: 600; white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+
+  /* analogy cards */
+  .trio .card h4 { margin: 0 0 4px; font-size: 18px; }
+  .trio .emoji { font-size: 34px; line-height: 1; }
+  .pill { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 99px; font-weight: 600; }
+  .pill.html { background: var(--orange-soft); color: var(--orange); }
+  .pill.css { background: var(--accent-soft); color: var(--accent); }
+  .pill.js { background: var(--purple-soft); color: var(--purple); }
+
+  /* URL parser */
+  .url-parts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 15px; }
+  .url-part { border-radius: 8px; padding: 6px 10px; display: flex; flex-direction: column; min-width: 0; word-break: break-all; }
+  .url-part small { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 12px; opacity: .85; }
+  .up-protocol { background: var(--purple-soft); color: var(--purple); }
+  .up-host { background: var(--accent-soft); color: var(--accent); }
+  .up-path { background: var(--green-soft); color: var(--green); }
+  .up-query { background: var(--orange-soft); color: var(--orange); }
+  .up-hash { background: var(--red-soft); color: var(--red); }
+
+  /* journey */
+  .journey { display: grid; gap: 10px; counter-reset: step; }
+  .step { display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: start; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); opacity: .45; transition: opacity .3s, border-color .3s, transform .3s; }
+  .step.on { opacity: 1; border-color: var(--accent); transform: translateX(4px); }
+  .step .ico { font-size: 26px; text-align: center; line-height: 1.3; }
+  .step b { display: block; }
+  .step span { color: var(--muted); font-size: 15px; }
+
+  /* three-layer demo */
+  .layer-demo { border: 1px solid var(--border); border-radius: 12px; padding: 18px; min-height: 180px; background: var(--surface); }
+  .layer-toggles label { margin-right: 14px; cursor: pointer; user-select: none; white-space: nowrap; }
+  .layer-demo.styled .profile { font-family: inherit; display: flex; gap: 16px; align-items: center; background: linear-gradient(135deg, #fff4e6, #e9f0ff); color: #1f2328; border-radius: 16px; padding: 18px; box-shadow: 0 6px 20px rgba(0,0,0,.08); }
+  .layer-demo.styled .profile img { width: 80px; height: 80px; border-radius: 50%; border: 4px solid #fff; }
+  .layer-demo.styled .profile h4 { margin: 0; font-size: 22px; }
+  .layer-demo.styled .profile p { margin: 2px 0 8px; color: #555; }
+  .layer-demo.styled .profile button { background: #ff5a5f; color: #fff; border: none; border-radius: 99px; padding: 6px 16px; font-size: 15px; cursor: pointer; }
+  .layer-demo:not(.styled) .profile { font-family: "Times New Roman", serif; color: #000; background: #fff; padding: 8px; }
+  .layer-demo:not(.styled) .profile img { width: 80px; height: 80px; }
+  .layer-demo:not(.styled) .profile h4 { font-size: 2em; margin: .5em 0; font-weight: bold; }
+
+  /* playground */
+  .playground { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .playground iframe { width: 100%; min-height: 260px; border: 1px solid var(--border); border-radius: 10px; background: #fff; }
+  @media (max-width: 700px) { .playground { grid-template-columns: 1fr; } }
+
+  /* fake devtools illustration */
+  .fake-devtools { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--surface); font-size: 14px; }
+  .fd-tabs { display: flex; overflow-x: auto; background: var(--surface-2); border-bottom: 1px solid var(--border); }
+  .fd-tab { padding: 8px 14px; white-space: nowrap; cursor: pointer; border: none; background: none; color: var(--muted); font: inherit; font-size: 14px; border-bottom: 2px solid transparent; }
+  .fd-tab.on { color: var(--accent); border-bottom-color: var(--accent); background: var(--surface); }
+  .fd-body { padding: 14px 16px; min-height: 120px; }
+  .fd-body p { margin: 0 0 6px; }
+
+  /* console mirror */
+  .console-mirror { background: var(--code-bg); color: var(--code-text); border-radius: 10px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13.5px; max-height: 240px; overflow-y: auto; margin-top: 10px; }
+  .console-mirror div { padding: 4px 12px; border-bottom: 1px solid rgba(255,255,255,.06); white-space: pre-wrap; word-break: break-all; }
+  .console-mirror .w { background: rgba(240,170,0,.12); color: #ffd479; }
+  .console-mirror .e { background: rgba(255,80,80,.12); color: #ff9b94; }
+  .console-mirror .i { color: #9cc7ff; }
+  .console-mirror .empty { color: #8a8f98; }
+
+  /* network mirror */
+  .net-table td, .net-table th { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; white-space: nowrap; }
+  .net-table .s2 { color: var(--green); font-weight: 600; }
+  .net-table .s4, .net-table .s5, .net-table .sx { color: var(--red); font-weight: 600; }
+  .bar { height: 8px; border-radius: 4px; background: var(--accent); min-width: 3px; }
+
+  .secret-box { display: none; }
+  #editable-title { outline: 2px dashed transparent; }
+
+  .storage-out { font-size: 20px; font-weight: 600; margin: 10px 0; min-height: 1.5em; }
+
+  /* quiz */
+  .quiz-q { margin: 18px 0; }
+  .quiz-q p { margin: 0 0 6px; font-weight: 600; }
+  .quiz-q label { display: block; padding: 7px 12px; margin: 5px 0; border: 1px solid var(--border); border-radius: 9px; cursor: pointer; background: var(--surface); }
+  .quiz-q label.right { border-color: var(--green); background: var(--green-soft); }
+  .quiz-q label.wrong { border-color: var(--red); background: var(--red-soft); }
+  .quiz-q .why { font-size: 15px; color: var(--muted); display: none; margin-top: 4px; }
+  .quiz-q.done .why { display: block; }
+  .score { font-size: 20px; font-weight: 700; }
+
+  details { border: 1px solid var(--border); border-radius: 10px; padding: 8px 14px; margin: 8px 0; background: var(--surface); }
+  details summary { cursor: pointer; font-weight: 600; }
+
+  footer { border-top: 1px solid var(--border); padding: 24px 16px 40px; color: var(--muted); font-size: 14px; text-align: center; }
+
+  .flash { animation: flash 1.2s ease; }
+  @keyframes flash { 0% { background: var(--orange-soft); } 100% { background: transparent; } }
+  .muted { color: var(--muted); }
+  .small { font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#top">🌐 网页是什么</a>
+    <div class="progress" aria-hidden="true"><div id="progress-bar"></div></div>
+    <button class="theme-btn" id="theme-btn" type="button" aria-label="切换深色/浅色">🌓</button>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <nav class="toc" aria-label="目录">
+    <div class="toc-group">第一部分 · 网页</div>
+    <ol id="toc-list">
+      <li><a href="#what">网页到底是什么</a></li>
+      <li><a href="#url">看懂网址</a></li>
+      <li><a href="#journey">按下回车之后</a></li>
+      <li><a href="#trio">网页三兄弟</a></li>
+      <li><a href="#playground">亲手写一个网页</a></li>
+      <li class="toc-group" style="counter-increment:none">第二部分 · F12</li>
+      <li><a href="#f12">打开开发者工具</a></li>
+      <li><a href="#elements">元素 Elements</a></li>
+      <li><a href="#console">控制台 Console</a></li>
+      <li><a href="#network">网络 Network</a></li>
+      <li><a href="#sources">源代码 Sources</a></li>
+      <li><a href="#application">应用 Application</a></li>
+      <li><a href="#more">性能 · 设备 · 体检</a></li>
+      <li class="toc-group" style="counter-increment:none">收尾</li>
+      <li><a href="#quiz">小测验</a></li>
+      <li><a href="#glossary">名词小抄</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <h1>一个网页，<br>教会你什么是网页。</h1>
+      <p class="lead">不需要任何基础。你正在看的这一页，本身就是教材：读到哪里，就拆开它看看哪里。后半部分会带你打开浏览器里藏着的「开发者工具」（按 <kbd>F12</kbd>），亲手看到网页的骨架、对话框和它在网上收发的每一个包裹。</p>
+      <div class="badges">
+        <span class="badge">⏱ 大约 40 分钟</span>
+        <span class="badge">💻 建议用电脑上的 Chrome / Edge / Firefox 打开</span>
+        <span class="badge">🧪 每一节都有动手任务</span>
+      </div>
+    </header>
+
+    <!-- ============ 1 ============ -->
+    <section class="lesson" id="what">
+      <h2><span class="num">1</span>网页到底是什么？</h2>
+      <p class="sub">一句话：<b>网页就是一份「文字文件」，浏览器负责把它画成你看到的样子。</b></p>
+
+      <p>你可能以为网页是一张「图片」，或者是一种很神秘的东西。其实它比你想的朴素得多：网页本质上是<b>一段写好的文字</b>，里面用约定好的符号写着「这里是标题」「这里放一张图」「这个按钮是红色的」。</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div style="font-size:30px">📄 → 🖥️</div>
+          <b>打个比方：乐谱和钢琴</b>
+          <p class="small muted" style="margin:4px 0 0">网页文件就像<b>乐谱</b>，只是纸上的符号；浏览器就像<b>钢琴家</b>，照着乐谱弹出好听的音乐。同一份乐谱，不同钢琴家弹出来会略有不同——这也是为什么同一个网页在不同浏览器里偶尔长得不一样。</p>
+        </div>
+        <div class="card">
+          <div style="font-size:30px">🏪 ↔ 🧑</div>
+          <b>网页从哪里来？</b>
+          <p class="small muted" style="margin:4px 0 0">网页文件存放在世界某处一直开着的电脑上，这种电脑叫<b>服务器</b>。你用的浏览器叫<b>客户端</b>。你打开网页 = 浏览器去服务器那里「要」一份文件，服务器「给」它。</p>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="task-head">🧪 动手任务：看看这一页的「原文」</div>
+        <ol>
+          <li>在这页空白处<b>点鼠标右键</b>，选择「<b>查看网页源代码</b>」（或按 <kbd>Ctrl</kbd>+<kbd>U</kbd>，Mac 上是 <kbd>⌘</kbd>+<kbd>⌥</kbd>+<kbd>U</kbd>）。</li>
+          <li>会打开一个新标签页，里面全是文字和尖括号——<b>这就是你正在看的这个网页的本来面目</b>。</li>
+          <li>按 <kbd>Ctrl</kbd>+<kbd>F</kbd> 搜索「乐谱和钢琴」，你会在里面找到上面那段话。</li>
+        </ol>
+        <p class="small muted" style="margin:0">看不懂没关系！你只需要确认一件事：网页确实就是一段文字。</p>
+      </div>
+
+      <div class="note"><strong>💡 网页、网站、浏览器、互联网，有啥区别？</strong>
+        <b>网页</b>是一页；<b>网站</b>是一堆相关网页的集合（比如一个购物网站有首页、商品页、购物车页）；<b>浏览器</b>是用来看网页的软件（Chrome、Edge、Safari、Firefox）；<b>互联网</b>是把全世界电脑连在一起的那张大网，网页只是在网上跑的众多东西之一（微信消息、网络游戏也在网上跑）。
+      </div>
+    </section>
+
+    <!-- ============ 2 ============ -->
+    <section class="lesson" id="url">
+      <h2><span class="num">2</span>看懂网址</h2>
+      <p class="sub">网址（URL）就是网页的「门牌号」，告诉浏览器去哪里、拿哪个文件。</p>
+
+      <p>在下面的框里粘贴任意一个网址（比如从浏览器地址栏里复制一个），它会被自动拆成几块：</p>
+      <div class="card">
+        <input type="text" id="url-input" value="https://www.example.com:443/shop/shoes.html?color=red&size=42#reviews" aria-label="输入网址" spellcheck="false">
+        <div class="url-parts" id="url-parts"></div>
+        <div class="small muted" id="url-explain" style="margin-top:10px"></div>
+      </div>
+
+      <div class="table-wrap"><table>
+        <tr><th>部分</th><th>它是什么</th><th>生活中的比喻</th></tr>
+        <tr><td><span class="pill" style="background:var(--purple-soft);color:var(--purple)">协议</span> <code>https://</code></td><td>用什么「语言」和服务器沟通。<code>https</code> 里的 s 表示<b>加密</b>，别人中途偷看不了。</td><td>寄快递用「保密专送」还是「普通平邮」</td></tr>
+        <tr><td><span class="pill" style="background:var(--accent-soft);color:var(--accent)">域名</span> <code>www.example.com</code></td><td>服务器的名字。电脑之间其实用一串数字（IP 地址）找彼此，域名是给人记的好名字。</td><td>「XX 路 88 号」这样的地址</td></tr>
+        <tr><td><span class="pill" style="background:var(--green-soft);color:var(--green)">路径</span> <code>/shop/shoes.html</code></td><td>服务器上的哪个文件/哪个页面。</td><td>大楼里的「3 楼 302 室」</td></tr>
+        <tr><td><span class="pill" style="background:var(--orange-soft);color:var(--orange)">参数</span> <code>?color=red</code></td><td>额外附带的要求，用 <code>?</code> 开头，多个参数用 <code>&amp;</code> 连接。</td><td>点外卖时备注「不要辣」</td></tr>
+        <tr><td><span class="pill" style="background:var(--red-soft);color:var(--red)">锚点</span> <code>#reviews</code></td><td>页面里的某个位置。<b>不会发给服务器</b>，只是让浏览器滚动到那里。</td><td>书里夹的书签</td></tr>
+      </table></div>
+
+      <div class="task">
+        <div class="task-head">🧪 动手任务：让锚点动起来</div>
+        <p style="margin:0">看看左边目录：每点一项，地址栏结尾就会多出 <code>#console</code> 之类的东西，页面跳到对应位置，但网页没有重新加载。现在试着把地址栏结尾改成 <code>#network</code> 再按回车。</p>
+      </div>
+    </section>
+
+    <!-- ============ 3 ============ -->
+    <section class="lesson" id="journey">
+      <h2><span class="num">3</span>按下回车之后，发生了什么？</h2>
+      <p class="sub">从你敲回车，到网页出现在眼前，通常只用不到一秒。我们放慢 100 倍来看。</p>
+
+      <button class="btn primary" id="journey-play" type="button">▶ 播放这一秒</button>
+      <div class="journey" id="journey-steps" style="margin-top:12px">
+        <div class="step"><div class="ico">⌨️</div><div><b>① 你输入网址，按下回车</b><span>浏览器拿到了「门牌号」。</span></div></div>
+        <div class="step"><div class="ico">📒</div><div><b>② 查电话簿（DNS）</b><span>浏览器问 DNS 服务器：「www.example.com 的数字地址是多少？」得到类似 <code>93.184.215.14</code> 的 IP 地址。</span></div></div>
+        <div class="step"><div class="ico">🤝</div><div><b>③ 建立连接</b><span>浏览器和服务器「握手」，如果是 https 还要商量好加密的暗号。</span></div></div>
+        <div class="step"><div class="ico">📨</div><div><b>④ 发送请求（Request）</b><span>「你好，我要 /shop/shoes.html 这个文件。我是 Chrome 浏览器，我能看懂中文。」</span></div></div>
+        <div class="step"><div class="ico">📦</div><div><b>⑤ 服务器回复（Response）</b><span>「状态 200，没问题，给你！」然后把 HTML 文件发回来。如果找不到文件，就回复著名的 <b>404</b>。</span></div></div>
+        <div class="step"><div class="ico">🔁</div><div><b>⑥ 浏览器读 HTML，发现还要别的东西</b><span>「这里要一张图片、一个样式文件、一个脚本……」于是再发出好多个请求。一个网页往往要几十上百个请求！</span></div></div>
+        <div class="step"><div class="ico">🎨</div><div><b>⑦ 画出网页</b><span>浏览器把骨架（HTML）+ 衣服（CSS）组合好，画到屏幕上，再运行动作（JavaScript），网页就能点、能动了。</span></div></div>
+      </div>
+      <div class="note ok"><strong>📌 记住这两个词：请求（Request）和响应（Response）</strong>
+        整个互联网上的网页，就是在不停地「一问一答」。待会儿在 F12 的<b>网络（Network）</b>面板里，你能亲眼看到每一次「问」和「答」。
+      </div>
+    </section>
+
+    <!-- ============ 4 ============ -->
+    <section class="lesson" id="trio">
+      <h2><span class="num">4</span>网页三兄弟：HTML、CSS、JavaScript</h2>
+      <p class="sub">几乎所有网页，都由这三种东西组成。用「人」来比喻最好记。</p>
+
+      <div class="grid-3 trio">
+        <div class="card"><div class="emoji">🦴</div><h4>HTML <span class="pill html">骨架</span></h4><p class="small" style="margin:0">决定网页上<b>有什么</b>：标题、段落、图片、按钮、链接。它用 <code>&lt;标签&gt;</code> 把内容包起来。</p></div>
+        <div class="card"><div class="emoji">👗</div><h4>CSS <span class="pill css">衣服</span></h4><p class="small" style="margin:0">决定网页<b>长什么样</b>：颜色、字体、大小、位置、圆角、阴影、动画。</p></div>
+        <div class="card"><div class="emoji">💃</div><h4>JavaScript <span class="pill js">动作</span></h4><p class="small" style="margin:0">决定网页<b>能做什么</b>：点按钮会怎样、自动刷新消息、表单检查、小游戏。简称 JS。</p></div>
+      </div>
+
+      <h3>亲眼看看：一层一层叠上去</h3>
+      <p>下面是一张「个人名片」。勾掉 CSS，看看没穿衣服的网页长什么样；勾掉 JS，按钮就再也不理你了。</p>
+      <div class="layer-toggles" style="margin-bottom:10px">
+        <label><input type="checkbox" checked disabled> <span class="pill html">HTML</span> 骨架（必须有）</label>
+        <label><input type="checkbox" id="tg-css" checked> <span class="pill css">CSS</span> 衣服</label>
+        <label><input type="checkbox" id="tg-js" checked> <span class="pill js">JS</span> 动作</label>
+      </div>
+      <div class="layer-demo styled" id="layer-demo">
+        <div class="profile">
+          <img src="assets/cat.svg" alt="一只橘猫的头像">
+          <div>
+            <h4>橘猫小橙</h4>
+            <p>职业：躺平 · 爱好：吃饭</p>
+            <button type="button" id="like-btn">❤ 点赞 <span id="like-count">0</span></button>
+          </div>
+        </div>
+      </div>
+
+      <details>
+        <summary>看看这张名片的三段代码</summary>
+<pre><code><span class="t-com">&lt;!-- HTML：有什么 --&gt;</span>
+<span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-str">"profile"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;img</span> <span class="t-attr">src</span>=<span class="t-str">"cat.svg"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;h4&gt;</span>橘猫小橙<span class="t-tag">&lt;/h4&gt;</span>
+  <span class="t-tag">&lt;button&gt;</span>❤ 点赞<span class="t-tag">&lt;/button&gt;</span>
+<span class="t-tag">&lt;/div&gt;</span></code></pre>
+<pre><code><span class="t-com">/* CSS：长什么样 */</span>
+<span class="t-tag">.profile img</span> { <span class="t-attr">border-radius</span>: <span class="t-str">50%</span>; }      <span class="t-com">/* 头像变圆 */</span>
+<span class="t-tag">.profile button</span> { <span class="t-attr">background</span>: <span class="t-str">#ff5a5f</span>; } <span class="t-com">/* 按钮变红 */</span></code></pre>
+<pre><code><span class="t-com">// JavaScript：能做什么</span>
+<span class="t-key">let</span> count = 0;
+button.<span class="t-attr">onclick</span> = () =&gt; {
+  count = count + 1;            <span class="t-com">// 每点一次加一</span>
+  countText.textContent = count; <span class="t-com">// 把新数字写到页面上</span>
+};</code></pre>
+      </details>
+
+      <h3>HTML 标签：网页的「积木块」</h3>
+      <p>HTML 里每块内容都用一对标签包起来：<code>&lt;开始&gt;</code>内容<code>&lt;/结束&gt;</code>。最常见的几个：</p>
+      <div class="table-wrap"><table>
+        <tr><th>标签</th><th>意思</th><th>例子</th></tr>
+        <tr><td><code>&lt;h1&gt;</code>～<code>&lt;h6&gt;</code></td><td>标题，h1 最大</td><td><code>&lt;h1&gt;我的博客&lt;/h1&gt;</code></td></tr>
+        <tr><td><code>&lt;p&gt;</code></td><td>段落（paragraph）</td><td><code>&lt;p&gt;今天天气很好。&lt;/p&gt;</code></td></tr>
+        <tr><td><code>&lt;a&gt;</code></td><td>链接，<code>href</code> 写要去的地址</td><td><code>&lt;a href="https://..."&gt;点我&lt;/a&gt;</code></td></tr>
+        <tr><td><code>&lt;img&gt;</code></td><td>图片，不需要结束标签</td><td><code>&lt;img src="cat.png"&gt;</code></td></tr>
+        <tr><td><code>&lt;button&gt;</code></td><td>按钮</td><td><code>&lt;button&gt;提交&lt;/button&gt;</code></td></tr>
+        <tr><td><code>&lt;div&gt;</code></td><td>一个「盒子」，用来把东西分组</td><td><code>&lt;div&gt;...&lt;/div&gt;</code></td></tr>
+      </table></div>
+      <p class="small muted">标签里的 <code>src</code>、<code>href</code>、<code>class</code> 这些叫<b>属性</b>，是对这块积木的补充说明。</p>
+    </section>
+
+    <!-- ============ 5 ============ -->
+    <section class="lesson" id="playground">
+      <h2><span class="num">5</span>亲手写一个网页</h2>
+      <p class="sub">左边改代码，右边马上看到效果。改坏了也不怕，点「恢复」就好。</p>
+
+      <div class="playground">
+        <textarea class="code" id="pg-code" spellcheck="false" aria-label="HTML 代码编辑区"></textarea>
+        <iframe id="pg-frame" title="预览" sandbox="allow-scripts allow-modals"></iframe>
+      </div>
+      <button class="btn" id="pg-reset" type="button">↺ 恢复示例</button>
+      <span class="small muted">试试：把 <code>&lt;h1&gt;</code> 里的字改成你的名字；把 <code>color: tomato</code> 改成 <code>color: green</code>；点一下预览里的按钮。</span>
+
+      <div class="note"><strong>🏠 想在自己电脑上做？</strong>
+        打开记事本，把左边的代码复制进去，保存为 <code>我的网页.html</code>（注意后缀是 <code>.html</code>，不是 <code>.txt</code>），然后双击这个文件——你的浏览器就会打开它。恭喜，你做出了人生第一个网页！
+      </div>
+    </section>
+
+    <hr class="part">
+    <p class="part-title">第二部分 · 打开网页的「后台」：F12 开发者工具</p>
+
+    <!-- ============ 6 ============ -->
+    <section class="lesson" id="f12">
+      <h2><span class="num">6</span>打开开发者工具（DevTools）</h2>
+      <p class="sub">每个电脑浏览器都自带一个「透视镜」。程序员每天都在用，它对你完全免费，而且<b>不会弄坏任何东西</b>。</p>
+
+      <div class="table-wrap"><table>
+        <tr><th>你的电脑</th><th>快捷键</th><th>或者用鼠标</th></tr>
+        <tr><td>Windows / Linux</td><td><kbd>F12</kbd> 或 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd></td><td rowspan="2">在网页上<b>右键 → 检查</b>（Chrome/Edge 叫「检查」，Firefox 叫「检查元素」）</td></tr>
+        <tr><td>Mac</td><td><kbd>⌘</kbd>+<kbd>⌥</kbd>+<kbd>I</kbd></td></tr>
+        <tr><td>Mac 上的 Safari</td><td colspan="2">先到「设置 → 高级」勾选「在菜单栏中显示网页开发者功能」，然后同上</td></tr>
+        <tr><td>笔记本 F12 没反应？</td><td colspan="2">试试 <kbd>Fn</kbd>+<kbd>F12</kbd>，或者直接用 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd></td></tr>
+      </table></div>
+      <p class="small muted">📱 手机浏览器一般没有开发者工具。这一部分请用电脑跟着做。</p>
+
+      <div class="note ok" id="devtools-status"><strong>🔍 检测中……</strong>按下 <kbd>F12</kbd> 试试，这个框会在你打开开发者工具时尝试给你反馈（检测不一定 100% 准）。</div>
+
+      <h3>先认个脸：各个标签页是干嘛的</h3>
+      <p>打开之后，你会在顶部看到一排标签。中文版和英文版名字不同，点击下面的标签预览一下：</p>
+      <div class="fake-devtools">
+        <div class="fd-tabs" id="fd-tabs" role="tablist"></div>
+        <div class="fd-body" id="fd-body"></div>
+      </div>
+      <div class="note"><strong>🌏 想把 DevTools 换成中文？</strong>
+        Chrome / Edge：点开发者工具右上角的 ⚙️（设置）→ Preferences → Language，选「中文」，重启工具即可。下文会同时写中英文名称。
+      </div>
+      <div class="note"><strong>🪟 面板位置不顺手？</strong>
+        点开发者工具右上角的 <b>⋮</b>，在「Dock side（停靠位置）」里可以选放在下面、右边，或者单独一个窗口。
+      </div>
+    </section>
+
+    <!-- ============ 7 ============ -->
+    <section class="lesson" id="elements">
+      <h2><span class="num">7</span>元素（Elements）：网页的骨架和衣服</h2>
+      <p class="sub">这里显示的是网页「此刻」的 HTML 结构（叫 DOM 树），右边是每块元素穿的 CSS 衣服。</p>
+
+      <div class="grid-2">
+        <div class="card"><b>左边：DOM 树</b><p class="small muted" style="margin:4px 0 0">就是 HTML，但会实时变化。点 ▶ 小三角展开/收起。鼠标悬停在某一行上，网页上对应的那块会被高亮。</p></div>
+        <div class="card"><b>右边：Styles（样式）</b><p class="small muted" style="margin:4px 0 0">选中元素的所有 CSS。可以直接改数值、取消勾选某条样式，<b>马上看到效果</b>。下面还有 Computed（计算后）和盒模型图。</p></div>
+      </div>
+
+      <div class="task">
+        <div class="task-head">🧪 任务 1：用「选择工具」点一下</div>
+        <ol>
+          <li>打开开发者工具，点左上角那个<b>「箭头+方框」图标</b> ⬚↖（或按 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd>，Mac 是 <kbd>⌘</kbd>+<kbd>⇧</kbd>+<kbd>C</kbd>）。</li>
+          <li>把鼠标移到网页上，会看到一块块彩色高亮——这些就是 HTML 元素。</li>
+          <li>点一下下面这个标题，Elements 面板会直接跳到它的代码。</li>
+        </ol>
+        <h3 id="editable-title" style="margin:10px 0 0">我是一个可以被你改掉的标题</h3>
+      </div>
+
+      <div class="task">
+        <div class="task-head">🧪 任务 2：改字、改颜色</div>
+        <ol>
+          <li>在 Elements 面板里，<b>双击</b>上面那个标题的文字，改成任何你想要的话，按回车。网页上的字立刻变了！</li>
+          <li>在右边 Styles 区域，找到 <code>element.style { }</code>，点一下花括号里面，输入 <code>color: red</code> 回车。</li>
+          <li>再试试 <code>font-size: 50px</code>、<code>transform: rotate(5deg)</code>。</li>
+        </ol>
+        <p class="small muted" style="margin:0">⚠️ 刷新网页后一切恢复原样。你改的只是<b>你自己电脑上的这一份副本</b>，服务器上的原文件完全没动。所以「F12 把余额改成一个亿」只能骗骗截图，钱不会真的变多 😄</p>
+      </div>
+
+      <div class="task">
+        <div class="task-head">🕵️ 任务 3：找到藏起来的秘密</div>
+        <p style="margin:0 0 6px">这一节里有一个<b>被 CSS 藏起来</b>（<code>display: none</code>）的盒子，屏幕上看不到，但它就在 HTML 里。</p>
+        <ol>
+          <li>在 Elements 面板中按 <kbd>Ctrl</kbd>+<kbd>F</kbd>（Mac：<kbd>⌘</kbd>+<kbd>F</kbd>），搜索 <code>secret-box</code>。</li>
+          <li>选中它，在 Styles 里找到 <code>display: none</code>，<b>取消前面的勾</b>。</li>
+          <li>秘密就会出现在这里 👇</li>
+        </ol>
+        <div class="secret-box" id="secret-box">
+          <div class="note ok" style="margin:8px 0 0"><strong>🎉 你找到了！暗号是：「网页没有秘密」</strong>这就是为什么<b>密码、密钥绝不能写进网页里</b>——网页里的一切，用户都看得到。</div>
+        </div>
+      </div>
+
+      <h3>盒模型：每个元素都是一个盒子</h3>
+      <p>在 Styles 或 Computed 区域往下拉，会看到一个彩色的层层套娃图：</p>
+      <div class="card" style="text-align:center;font-size:14px">
+        <div style="display:inline-block;background:var(--orange-soft);padding:10px 18px;border-radius:6px;border:1px dashed var(--orange)">margin 外边距：盒子和别人之间的距离
+          <div style="background:#f5d78e33;border:6px solid #e6b85c;padding:10px 14px;margin-top:6px">border 边框
+            <div style="background:var(--green-soft);padding:10px 14px;margin-top:6px">padding 内边距：盒子壁到内容的距离
+              <div style="background:var(--accent-soft);padding:8px 14px;margin-top:6px">content 内容</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="small muted">小技巧：在 Elements 里右键某个元素 →「Force state（强制状态）」→ <code>:hover</code>，就能看到鼠标悬停时的样式，不用一直把鼠标放上去。</p>
+    </section>
+
+    <!-- ============ 8 ============ -->
+    <section class="lesson" id="console">
+      <h2><span class="num">8</span>控制台（Console）：和网页直接对话</h2>
+      <p class="sub">控制台有两个用途：① 网页把「日志」和「报错」写在这里；② 你可以在这里输入 JavaScript，让网页立刻执行。</p>
+
+      <div class="note"><strong>👋 网页其实一直在跟你说话</strong>
+        打开开发者工具，点「<b>控制台 / Console</b>」标签。往上翻翻，你会看到这个网页一加载就给你留了言（一段彩色的欢迎词）。
+      </div>
+
+      <h3>① 网页写给你的消息</h3>
+      <p>点下面的按钮，然后去 Console 里看看出现了什么。（下面的黑框是「镜像」，方便你没打开 F12 时对照。）</p>
+      <div>
+        <button class="btn" data-log="log" type="button">普通消息 console.log</button>
+        <button class="btn orange" data-log="warn" type="button">⚠ 警告 console.warn</button>
+        <button class="btn red" data-log="error" type="button">✖ 错误 console.error</button>
+        <button class="btn" data-log="table" type="button">📊 表格 console.table</button>
+        <button class="btn red" data-log="crash" type="button">💥 制造一个真的 bug</button>
+        <button class="btn" data-log="clear" type="button">🧹 清空</button>
+      </div>
+      <div class="console-mirror" id="console-mirror"><div class="empty">// 点上面的按钮，这里和真正的 Console 都会出现消息</div></div>
+
+      <div class="grid-2" style="margin-top:14px">
+        <div class="card"><b style="color:var(--orange)">黄色 = 警告</b><p class="small muted" style="margin:4px 0 0">「这样做不太好，但我还能继续」。普通用户一般可以忽略。</p></div>
+        <div class="card"><b style="color:var(--red)">红色 = 错误</b><p class="small muted" style="margin:4px 0 0">「出问题了」。网页上某个按钮没反应时，来这里看看有没有红字，<b>截图发给开发者</b>能帮他们很快定位 bug。点红字右边的文件名还能跳到出错的那行代码。</p></div>
+      </div>
+      <p class="small muted">控制台顶部的筛选栏可以只看错误（Errors）、警告（Warnings）或信息（Info），也可以输入关键字过滤。</p>
+
+      <h3>② 你写给网页的命令</h3>
+      <p>点进 Console 最下面带 <code>&gt;</code> 的那一行，逐条输入下面的内容，每条后按 <kbd>回车</kbd>：</p>
+      <div class="table-wrap"><table>
+        <tr><th>输入</th><th>会发生什么</th></tr>
+        <tr><td><code>1 + 1</code></td><td>控制台变计算器，回答 <code>2</code>。试试 <code>365 * 24</code>（一年多少小时）。</td></tr>
+        <tr><td><code>"你好".repeat(5)</code></td><td>把「你好」重复 5 遍。</td></tr>
+        <tr><td><code>alert("我会写代码了")</code></td><td>网页弹出一个对话框。</td></tr>
+        <tr><td><code>document.title = "我改了标题"</code></td><td>看看浏览器标签页上的名字！</td></tr>
+        <tr><td><code>document.body.style.background = "pink"</code></td><td>整页变成粉色。刷新恢复。</td></tr>
+        <tr><td><code>打招呼("小明")</code></td><td>这是这个网页专门给你准备的函数，换成你的名字试试。</td></tr>
+        <tr><td><code>$0</code></td><td>代表你在 Elements 面板里<b>当前选中的元素</b>。先在 Elements 选中一个东西，再输入 <code>$0.style.border = "3px solid red"</code>。</td></tr>
+        <tr><td><code>document.querySelectorAll("p").length</code></td><td>数一数这个网页一共有多少个段落。</td></tr>
+      </table></div>
+      <p class="small muted">小技巧：按 <kbd>↑</kbd> 可以翻出上一条命令；按 <kbd>Tab</kbd> 可以自动补全；<kbd>Shift</kbd>+<kbd>回车</kbd> 换行而不执行；右上角 🚫 图标（或 <kbd>Ctrl</kbd>+<kbd>L</kbd>）清空屏幕。</p>
+
+      <div class="note danger"><strong>🚨 安全警告：永远不要往控制台里粘贴陌生人给你的代码</strong>
+        骗子常说「在 F12 控制台粘贴这段代码，就能领红包 / 看到谁屏蔽了你 / 免费开会员」。真相是：那段代码会以<b>你的身份</b>在当前网站上执行，可能偷走你的登录状态、替你发消息或转账。这叫「Self-XSS（自我跨站脚本攻击）」。所以 Chrome 第一次粘贴时会要求你手动输入 <code>allow pasting</code> 才放行——它在保护你。<b>自己理解的代码才运行。</b>
+      </div>
+    </section>
+
+    <!-- ============ 9 ============ -->
+    <section class="lesson" id="network">
+      <h2><span class="num">9</span>网络（Network）：偷看网页收发的每个包裹</h2>
+      <p class="sub">还记得第 3 节的「请求」和「响应」吗？Network 面板把每一次请求都列成一行，一个都不漏。</p>
+
+      <div class="task">
+        <div class="task-head">🧪 任务 1：看一个网页加载时的全部请求</div>
+        <ol>
+          <li>打开开发者工具，点「<b>网络 / Network</b>」标签。</li>
+          <li>此时列表可能是空的——因为 Network 只记录<b>打开它之后</b>发生的请求。</li>
+          <li>按 <kbd>F5</kbd> 刷新网页。列表瞬间填满：第一行通常就是这个 HTML 文件本身，然后是图片等。</li>
+        </ol>
+      </div>
+
+      <div class="task">
+        <div class="task-head">🧪 任务 2：自己制造请求</div>
+        <p style="margin:0 0 8px">保持 Network 面板打开，点下面的按钮，看新出现的行：</p>
+        <button class="btn green" data-net="ok" type="button">📥 请求一份数据（成功 200）</button>
+        <button class="btn" data-net="img" type="button">🖼 加载一张图片</button>
+        <button class="btn red" data-net="404" type="button">❓ 请求不存在的文件（404）</button>
+        <button class="btn" data-net="many" type="button">🚀 一口气发 5 个请求</button>
+        <div id="net-result" class="small" style="margin-top:8px"></div>
+        <div class="table-wrap" style="margin-top:10px"><table class="net-table">
+          <thead><tr><th>名称 Name</th><th>状态 Status</th><th>类型 Type</th><th>大小 Size</th><th>时间 Time</th><th style="width:30%">瀑布 Waterfall</th></tr></thead>
+          <tbody id="net-tbody"><tr><td colspan="6" class="muted" style="font-family:inherit">（这是镜像表，点按钮后会同步显示；真正的 Network 面板里信息更全）</td></tr></tbody>
+        </table></div>
+      </div>
+
+      <h3>每一列是什么意思</h3>
+      <div class="table-wrap"><table>
+        <tr><th>列</th><th>含义</th></tr>
+        <tr><td>名称 Name</td><td>请求的文件名或地址。</td></tr>
+        <tr><td>状态 Status</td><td>服务器回复的「状态码」，见下表。红色表示失败。</td></tr>
+        <tr><td>类型 Type</td><td><code>document</code> 网页本身、<code>stylesheet</code> CSS、<code>script</code> JS、<code>img</code> / <code>svg</code> 图片、<code>fetch</code>/<code>xhr</code> 网页用 JS 要的数据、<code>font</code> 字体。</td></tr>
+        <tr><td>大小 Size</td><td>传输了多少数据。显示 <code>(disk cache)</code> / <code>(memory cache)</code> 表示没去服务器，直接用了浏览器之前存下的副本（<b>缓存</b>）。</td></tr>
+        <tr><td>时间 Time</td><td>从发出请求到收完回复用了多久。ms 是毫秒，1000ms = 1 秒。</td></tr>
+        <tr><td>瀑布 Waterfall</td><td>时间线。条越长越慢；能看出哪些请求在排队、哪些是同时进行的。</td></tr>
+      </table></div>
+
+      <h3>状态码：服务器的「回话暗号」</h3>
+      <div class="table-wrap"><table>
+        <tr><th>开头</th><th>大意</th><th>常见例子</th></tr>
+        <tr><td><b style="color:var(--green)">2xx</b></td><td>成功 ✅</td><td><code>200 OK</code> 一切正常</td></tr>
+        <tr><td><b style="color:var(--accent)">3xx</b></td><td>请去别处 / 用你手上的 ↪</td><td><code>301</code> 永久搬家了；<code>304 Not Modified</code> 文件没变，用你缓存的那份</td></tr>
+        <tr><td><b style="color:var(--orange)">4xx</b></td><td>你（客户端）的问题 🙅</td><td><code>404</code> 找不到；<code>403</code> 没权限；<code>401</code> 请先登录；<code>429</code> 请求太频繁</td></tr>
+        <tr><td><b style="color:var(--red)">5xx</b></td><td>服务器的问题 🔥</td><td><code>500</code> 服务器内部出错；<code>502</code>/<code>503</code> 服务器暂时扛不住</td></tr>
+      </table></div>
+
+      <h3>点开一行，看「包裹」里面</h3>
+      <p>在 Network 里<b>点击任意一行</b>（比如刚才的 <code>data.json</code>），右边会展开详情：</p>
+      <div class="grid-2">
+        <div class="card"><b>Headers 标头</b><p class="small muted" style="margin:4px 0 0">包裹外面贴的「快递单」：请求地址、方法（GET 是拿、POST 是交）、状态码、浏览器自我介绍（User-Agent）、服务器说文件是什么类型（Content-Type）等。</p></div>
+        <div class="card"><b>Preview 预览</b><p class="small muted" style="margin:4px 0 0">把回复内容整理成好看的样子，比如 JSON 数据会变成可折叠的树、图片直接显示。</p></div>
+        <div class="card"><b>Response 响应</b><p class="small muted" style="margin:4px 0 0">服务器回复的原始内容，一个字不改。</p></div>
+        <div class="card"><b>Timing 时间</b><p class="small muted" style="margin:4px 0 0">这一个请求的时间被花在哪里：排队、查 DNS、连接、等服务器、下载……</p></div>
+      </div>
+
+      <h3>几个超实用的开关</h3>
+      <div class="table-wrap"><table>
+        <tr><th>开关</th><th>用途</th></tr>
+        <tr><td><b>Preserve log</b> 保留日志</td><td>默认刷新或跳转页面会清空列表；勾上它就会保留。</td></tr>
+        <tr><td><b>Disable cache</b> 停用缓存</td><td>强制每次都从服务器重新拿，排查「为什么我改了网页却没变」时常用。</td></tr>
+        <tr><td><b>No throttling</b> 网速限制</td><td>下拉选 <b>Slow 3G / 4G</b>，模拟网速很慢的手机。选好后刷新，感受一下慢网速下网页怎么一点点出现的。用完记得改回来！</td></tr>
+        <tr><td><b>Offline</b> 离线</td><td>假装断网。</td></tr>
+        <tr><td>筛选栏 <b>All / Fetch/XHR / JS / CSS / Img…</b></td><td>只看某一类请求。</td></tr>
+        <tr><td>🚫 清空 / ⏺ 红点</td><td>清空列表 / 暂停录制。</td></tr>
+      </table></div>
+
+      <div class="note warn"><strong>🔒 看到 file:// 开头的地址？</strong>
+        如果你是直接双击 HTML 文件打开本页的，「请求数据」按钮可能会失败（浏览器出于安全考虑，不让本地文件随便读别的文件）。这本身也是一节课：去 Console 和 Network 看看红字是怎么说的。放到网上（比如 GitHub Pages）就正常了。
+      </div>
+    </section>
+
+    <!-- ============ 10 ============ -->
+    <section class="lesson" id="sources">
+      <h2><span class="num">10</span>源代码（Sources）：让代码「暂停」</h2>
+      <p class="sub">Sources 面板能看到网页用到的所有文件，还能让 JavaScript 在某一行<b>停下来</b>，一步一步慢慢看——这叫「断点调试」。</p>
+
+      <p>左边是文件列表（这个网页的 <code>index.html</code>、<code>assets/cat.svg</code> 等都在里面），中间是代码，右边是调试工具。</p>
+
+      <div class="task">
+        <div class="task-head">🧪 任务：用 debugger 抓住一次计算</div>
+        <p style="margin:0 0 6px">下面这个按钮会计算购物车总价。代码里写了一个 <code>debugger;</code>——它就像一个「暂停键」，<b>只有在开发者工具打开时</b>才会生效。</p>
+        <ol>
+          <li>保持开发者工具打开（随便哪个标签都行）。</li>
+          <li>点击下面的按钮。网页会「冻住」，开发者工具自动跳到 Sources，高亮停住的那一行。</li>
+          <li>把鼠标悬停在 <code>price</code>、<code>count</code> 这些单词上，会显示它们此刻的值。右侧「Scope 作用域」里也能看到。</li>
+          <li>按 <kbd>F10</kbd>（单步）一行一行往下走，或者按 <kbd>F8</kbd> / ▶ 按钮继续运行。</li>
+        </ol>
+        <button class="btn primary" id="calc-btn" type="button">🧮 计算 3 杯奶茶的总价</button>
+        <span id="calc-out" style="margin-left:8px;font-weight:600"></span>
+      </div>
+      <p class="small muted">不用 <code>debugger</code> 也行：在 Sources 里打开文件，点击代码左边的<b>行号</b>，出现蓝色标记就是一个断点；再点一下取消。</p>
+    </section>
+
+    <!-- ============ 11 ============ -->
+    <section class="lesson" id="application">
+      <h2><span class="num">11</span>应用（Application）：网页在你电脑里存了什么</h2>
+      <p class="sub">网页能在你的浏览器里存一些小东西，下次打开还记得你。Firefox 里这个面板叫「存储（Storage）」。</p>
+
+      <div class="grid-3">
+        <div class="card"><b>🍪 Cookie</b><p class="small muted" style="margin:4px 0 0">小纸条，<b>每次请求都会自动带给服务器</b>。最常用来记住「你已登录」。</p></div>
+        <div class="card"><b>📦 Local Storage</b><p class="small muted" style="margin:4px 0 0">本地储物柜，关掉浏览器也还在。常用来记设置，比如深色模式。</p></div>
+        <div class="card"><b>🗒 Session Storage</b><p class="small muted" style="margin:4px 0 0">临时便签，关掉这个标签页就没了。</p></div>
+      </div>
+
+      <div class="task">
+        <div class="task-head">🧪 任务：让网页记住你</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <input type="text" id="name-input" placeholder="输入你的名字" style="max-width:240px">
+          <button class="btn primary" id="save-name" type="button">💾 存起来</button>
+          <button class="btn" id="clear-name" type="button">🗑 忘掉我</button>
+        </div>
+        <div class="storage-out" id="greet-out"></div>
+        <ol>
+          <li>输入名字，点「存起来」，然后<b>刷新网页</b>——它还认识你！</li>
+          <li>打开开发者工具 →「<b>应用 / Application</b>」→ 左边「Storage」下的 <b>Local Storage</b> → 点开本网站地址。</li>
+          <li>你会看到一行 <code>visitorName</code>，值就是你的名字。<b>双击值</b>改成别的，再刷新网页看看。</li>
+          <li>Cookies 下面也有一条 <code>visited_lesson</code>，是这个网页给你留的小纸条。</li>
+        </ol>
+      </div>
+
+      <div class="note warn"><strong>🧹 「清除缓存和 Cookie」到底清了什么？</strong>
+        就是清掉这里的东西。清完之后网站会忘记你（需要重新登录、设置恢复默认）。在 Application 左侧「<b>Storage / 存储</b>」页里，点 <b>Clear site data</b> 可以只清当前这一个网站。
+      </div>
+    </section>
+
+    <!-- ============ 12 ============ -->
+    <section class="lesson" id="more">
+      <h2><span class="num">12</span>还有这些好用的：设备模式、性能、体检</h2>
+
+      <h3>📱 设备模式：在电脑上假装是手机</h3>
+      <p>开发者工具左上角，选择工具旁边有个<b>手机+平板图标</b>（快捷键 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd>，Mac：<kbd>⌘</kbd>+<kbd>⇧</kbd>+<kbd>M</kbd>）。点它，网页就会变成手机屏幕大小。顶部可以选具体机型、旋转屏幕。现在就试试：这个网页在手机上左边目录会消失，排版变成单列。这种「自动适应屏幕」的设计叫<b>响应式设计</b>。</p>
+
+      <h3>⚡ 性能（Performance）：网页为什么卡</h3>
+      <p>点圆形的 ⏺ 录制按钮，在网页上操作几秒（比如上下滚动），再点停止。你会得到一张详细的时间图，显示每一毫秒浏览器在忙什么：运行脚本（黄色）、计算样式和布局（紫色）、绘制画面（绿色）。看不懂很正常——知道「卡顿可以被录下来分析」就够了。</p>
+      <button class="btn orange" id="jank-btn" type="button">🐢 让网页故意卡 1 秒</button>
+      <span class="small muted">录制 Performance 时点它，会看到一大块黄色。</span>
+
+      <h3>🩺 Lighthouse：一键体检</h3>
+      <p>在开发者工具顶部找到 <b>Lighthouse</b>（可能藏在 <b>»</b> 里）。点「Analyze page load（分析网页加载）」，它会给网页的<b>性能、无障碍、最佳实践、SEO（搜索引擎友好度）</b>打分（0～100），并告诉你怎么改进。给你常去的网站测测看！</p>
+
+      <h3>🔎 万能搜索：命令菜单</h3>
+      <p>在开发者工具里按 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>（Mac：<kbd>⌘</kbd>+<kbd>⇧</kbd>+<kbd>P</kbd>），可以搜索任何功能。比如输入 <code>screenshot</code> 选「Capture full size screenshot」，就能截下<b>整个长网页</b>；输入 <code>dark</code> 可以模拟深色模式。</p>
+
+      <div class="table-wrap"><table>
+        <tr><th>我想……</th><th>去哪个面板</th></tr>
+        <tr><td>知道某个东西的颜色、字体、大小</td><td>元素 Elements（选择工具点一下）</td></tr>
+        <tr><td>网页按钮没反应，想知道为什么</td><td>控制台 Console（看红字）</td></tr>
+        <tr><td>网页加载很慢 / 图片出不来</td><td>网络 Network</td></tr>
+        <tr><td>看看网页在我电脑里存了什么</td><td>应用 Application</td></tr>
+        <tr><td>网页用起来卡</td><td>性能 Performance</td></tr>
+        <tr><td>看网页在手机上的样子</td><td>设备模式（📱 图标）</td></tr>
+        <tr><td>给网站打个分</td><td>Lighthouse</td></tr>
+      </table></div>
+    </section>
+
+    <hr class="part">
+    <p class="part-title">收尾</p>
+
+    <!-- ============ 13 ============ -->
+    <section class="lesson" id="quiz">
+      <h2><span class="num">13</span>小测验</h2>
+      <p class="sub">选完会立刻告诉你对错和原因。</p>
+      <div id="quiz-box"></div>
+      <p class="score" id="quiz-score"></p>
+    </section>
+
+    <!-- ============ 14 ============ -->
+    <section class="lesson" id="glossary">
+      <h2><span class="num">14</span>名词小抄</h2>
+      <div class="table-wrap"><table>
+        <tr><th>名词</th><th>一句话解释</th></tr>
+        <tr><td>浏览器 Browser</td><td>看网页的软件，负责下载并「画出」网页。</td></tr>
+        <tr><td>服务器 Server</td><td>存放网页、回应请求的电脑。</td></tr>
+        <tr><td>URL / 网址</td><td>网上某个资源的地址。</td></tr>
+        <tr><td>域名 Domain</td><td>好记的服务器名字，如 example.com。</td></tr>
+        <tr><td>DNS</td><td>互联网的电话簿，把域名翻译成 IP 地址。</td></tr>
+        <tr><td>HTTP / HTTPS</td><td>浏览器和服务器说话的规则；HTTPS 是加密版。</td></tr>
+        <tr><td>请求 / 响应</td><td>浏览器「要」东西 / 服务器「给」东西。</td></tr>
+        <tr><td>状态码</td><td>服务器回复的三位数暗号，如 200、404、500。</td></tr>
+        <tr><td>HTML</td><td>网页的骨架和内容。</td></tr>
+        <tr><td>CSS</td><td>网页的外观样式。</td></tr>
+        <tr><td>JavaScript (JS)</td><td>让网页能动、能交互的编程语言。</td></tr>
+        <tr><td>标签 / 元素</td><td>HTML 里的积木块，如 &lt;p&gt;、&lt;img&gt;。</td></tr>
+        <tr><td>DOM</td><td>浏览器根据 HTML 在内存里搭出的那棵「元素树」，JS 改它，页面就跟着变。</td></tr>
+        <tr><td>JSON</td><td>一种常见的数据格式，长得像 <code>{"名字": "小橙"}</code>。</td></tr>
+        <tr><td>缓存 Cache</td><td>浏览器存下的文件副本，下次不用再下载。</td></tr>
+        <tr><td>Cookie / Local Storage</td><td>网页存在你浏览器里的小数据。</td></tr>
+        <tr><td>断点 Breakpoint</td><td>让代码在某一行暂停，方便检查。</td></tr>
+        <tr><td>响应式设计</td><td>网页自动适应电脑、平板、手机等不同屏幕。</td></tr>
+      </table></div>
+
+      <div class="note ok"><strong>🎓 恭喜你读完了！</strong>
+        现在你知道：网页是一段文字，浏览器把它画出来；它由 HTML、CSS、JavaScript 组成；按 F12 就能看到它的骨架、和它对话、看它收发的包裹、查它存了什么。下次上网时，随手按一下 F12，你看到的世界会不一样。<br>
+        想继续学？推荐 <a href="https://developer.mozilla.org/zh-CN/docs/Learn" target="_blank" rel="noopener">MDN 学习区（中文）</a> 和 <a href="https://developer.chrome.com/docs/devtools?hl=zh-cn" target="_blank" rel="noopener">Chrome DevTools 官方文档</a>。
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  这个网页只用了一个 HTML 文件 + 一张图 + 一份数据。按 <kbd>Ctrl</kbd>+<kbd>U</kbd> 就能看到它的全部秘密。
+</footer>
+
+<script>
+/* =========================================================
+   你好，正在看源代码的同学！👋
+   这里就是这个网页的 JavaScript（动作）部分。
+   每一段都有中文注释，看不懂也没关系，挑感兴趣的读。
+   ========================================================= */
+
+/* ---------- 小工具：安全读写 localStorage ---------- */
+function storeGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+function storeSet(key, val) { try { localStorage.setItem(key, val); } catch (e) {} }
+function storeDel(key) { try { localStorage.removeItem(key); } catch (e) {} }
+function escapeHTML(s) { return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+
+/* ---------- 控制台欢迎词（打开 Console 就能看到） ---------- */
+console.log("%c👋 你好！你打开了控制台！", "font-size:22px;font-weight:bold;color:#2f6fde");
+console.log("%c这条消息是网页的 JavaScript 用 console.log() 写给你的。\n试着在下面输入：打招呼(\"你的名字\")  然后按回车。", "font-size:14px;color:#1a7f37");
+
+/* 专门给学习者在控制台里调用的函数 */
+function 打招呼(name) {
+  const who = name || "陌生人";
+  console.log("%c你好，" + who + "！你刚刚在控制台里运行了一个 JavaScript 函数 🎉", "font-size:16px;color:#7a3fc4");
+  return "函数的返回值：欢迎你，" + who;
+}
+window.打招呼 = 打招呼;
+
+/* ---------- 主题切换 ---------- */
+(function () {
+  const saved = storeGet("theme");
+  if (saved) document.documentElement.setAttribute("data-theme", saved);
+  document.getElementById("theme-btn").addEventListener("click", () => {
+    const cur = document.documentElement.getAttribute("data-theme")
+      || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    const next = cur === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    storeSet("theme", next);
+  });
+})();
+
+/* ---------- 阅读进度条 + 目录高亮 ---------- */
+(function () {
+  const bar = document.getElementById("progress-bar");
+  const links = [...document.querySelectorAll("nav.toc a")];
+  const sections = links.map(a => document.querySelector(a.getAttribute("href")));
+  function onScroll() {
+    const h = document.documentElement;
+    const pct = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight) * 100;
+    bar.style.width = pct + "%";
+    let idx = 0;
+    sections.forEach((s, i) => { if (s && s.getBoundingClientRect().top < 140) idx = i; });
+    links.forEach((a, i) => a.classList.toggle("active", i === idx));
+  }
+  addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+})();
+
+/* ---------- 第 2 节：网址拆解 ---------- */
+(function () {
+  const input = document.getElementById("url-input");
+  const out = document.getElementById("url-parts");
+  const explain = document.getElementById("url-explain");
+  function render() {
+    let u;
+    try { u = new URL(input.value.trim()); }
+    catch (e) {
+      out.innerHTML = "";
+      explain.textContent = "😅 这看起来不像一个完整的网址。记得以 https:// 开头哦。";
+      return;
+    }
+    const parts = [
+      ["up-protocol", u.protocol + "//", "协议"],
+      ["up-host", u.host, "域名" + (u.port ? "（含端口）" : "")],
+      ["up-path", u.pathname, "路径"],
+    ];
+    if (u.search) parts.push(["up-query", u.search, "参数"]);
+    if (u.hash) parts.push(["up-hash", u.hash, "锚点"]);
+    out.innerHTML = parts.map(p => `<div class="url-part ${p[0]}">${escapeHTML(p[1])}<small>${p[2]}</small></div>`).join("");
+    const params = [...u.searchParams.entries()];
+    explain.innerHTML = "翻译成人话：用 <b>" + escapeHTML(u.protocol.replace(":", "")) + "</b> 方式，去 <b>" + escapeHTML(u.hostname) +
+      "</b> 这台服务器，拿 <b>" + escapeHTML(decodeURIComponent(u.pathname)) + "</b>" +
+      (params.length ? "，并告诉它：" + params.map(([k, v]) => "<b>" + escapeHTML(k) + "</b> 是 <b>" + escapeHTML(v) + "</b>").join("、") : "") +
+      (u.hash ? "；拿到后滚动到 <b>" + escapeHTML(decodeURIComponent(u.hash)) + "</b> 的位置。" : "。");
+  }
+  input.addEventListener("input", render);
+  render();
+})();
+
+/* ---------- 第 3 节：请求旅程动画 ---------- */
+(function () {
+  const steps = [...document.querySelectorAll("#journey-steps .step")];
+  const btn = document.getElementById("journey-play");
+  let timer = null;
+  btn.addEventListener("click", () => {
+    clearInterval(timer);
+    steps.forEach(s => s.classList.remove("on"));
+    let i = 0;
+    btn.disabled = true;
+    timer = setInterval(() => {
+      if (i < steps.length) { steps[i].classList.add("on"); i++; }
+      else { clearInterval(timer); btn.disabled = false; btn.textContent = "↺ 再播一次"; }
+    }, 900);
+  });
+})();
+
+/* ---------- 第 4 节：三层叠加演示 ---------- */
+(function () {
+  const demo = document.getElementById("layer-demo");
+  const tgCss = document.getElementById("tg-css");
+  const tgJs = document.getElementById("tg-js");
+  const likeBtn = document.getElementById("like-btn");
+  const likeCount = document.getElementById("like-count");
+  let count = 0;
+  tgCss.addEventListener("change", () => demo.classList.toggle("styled", tgCss.checked));
+  likeBtn.addEventListener("click", () => {
+    if (!tgJs.checked) return; // 没有 JS，按钮就只是个摆设
+    count = count + 1;
+    likeCount.textContent = count;
+  });
+})();
+
+/* ---------- 第 5 节：迷你代码编辑器 ---------- */
+(function () {
+  const sample = `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: sans-serif; padding: 16px; }
+    h1 { color: tomato; }
+    button { font-size: 18px; padding: 6px 14px; }
+  </style>
+</head>
+<body>
+  <h1>你好，世界！</h1>
+  <p>这是我写的<b>第一个</b>网页。</p>
+  <ul>
+    <li>我喜欢的水果：西瓜</li>
+    <li>我喜欢的颜色：橙色</li>
+  </ul>
+  <button onclick="alert('你点了我！')">点我</button>
+</body>
+</html>`;
+  const ta = document.getElementById("pg-code");
+  const frame = document.getElementById("pg-frame");
+  let t = null;
+  function run() { frame.srcdoc = ta.value; }
+  ta.value = sample;
+  ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(run, 300); });
+  document.getElementById("pg-reset").addEventListener("click", () => { ta.value = sample; run(); });
+  run();
+})();
+
+/* ---------- 第 6 节：开发者工具标签介绍 + 打开检测 ---------- */
+(function () {
+  const tabs = [
+    ["元素", "Elements", "网页的 HTML 结构和 CSS 样式。可以直接修改，看效果。", "#elements"],
+    ["控制台", "Console", "看网页的日志和报错；输入 JavaScript 命令让网页执行。", "#console"],
+    ["源代码", "Sources", "网页用到的所有文件；可以设断点让代码暂停。", "#sources"],
+    ["网络", "Network", "网页发出的每一个请求和收到的每一个响应。", "#network"],
+    ["性能", "Performance", "录下一段时间，分析网页为什么卡。", "#more"],
+    ["内存", "Memory", "看网页占用了多少内存，找「内存泄漏」。进阶内容，初学可跳过。", null],
+    ["应用", "Application", "Cookie、Local Storage 等网页存在你电脑上的数据。", "#application"],
+    ["Lighthouse", "Lighthouse", "给网页做一次全面体检并打分。", "#more"],
+  ];
+  const tabsEl = document.getElementById("fd-tabs");
+  const body = document.getElementById("fd-body");
+  tabs.forEach((t, i) => {
+    const b = document.createElement("button");
+    b.className = "fd-tab";
+    b.type = "button";
+    b.setAttribute("role", "tab");
+    b.textContent = t[0] === t[1] ? t[0] : t[0] + " " + t[1];
+    b.addEventListener("click", () => select(i));
+    tabsEl.appendChild(b);
+  });
+  function select(i) {
+    [...tabsEl.children].forEach((b, j) => b.classList.toggle("on", i === j));
+    const t = tabs[i];
+    body.innerHTML = `<p><b>${t[0]}</b> <span class="muted">(${t[1]})</span></p><p>${t[2]}</p>` +
+      (t[3] ? `<p><a href="${t[3]}">→ 跳到这一节的动手练习</a></p>` : "");
+  }
+  select(0);
+
+  // 粗略检测：开发者工具停靠在窗口里时，窗口外框和内容区的尺寸差会变大
+  const status = document.getElementById("devtools-status");
+  let opened = false;
+  function check() {
+    const gap = Math.max(outerWidth - innerWidth, outerHeight - innerHeight);
+    const now = gap > 160;
+    if (now && !opened) {
+      opened = true;
+      status.innerHTML = "<strong>✅ 看起来你打开了开发者工具！</strong>很好，保持打开状态，继续往下读。（如果你把它弹成了独立窗口，这里可能检测不到，没关系。）";
+      console.log("%c✅ 开发者工具已打开，欢迎来到网页的后台！", "font-size:16px;color:#1a7f37");
+    }
+  }
+  setInterval(check, 1000);
+})();
+
+/* ---------- 第 8 节：控制台演示 ---------- */
+(function () {
+  const mirror = document.getElementById("console-mirror");
+  function show(cls, text) {
+    const first = mirror.querySelector(".empty");
+    if (first) first.remove();
+    const d = document.createElement("div");
+    d.className = cls;
+    d.textContent = text;
+    mirror.appendChild(d);
+    mirror.scrollTop = mirror.scrollHeight;
+  }
+  const actions = {
+    log() {
+      console.log("📝 这是一条普通消息。现在时间是", new Date().toLocaleTimeString());
+      show("", "📝 这是一条普通消息。现在时间是 " + new Date().toLocaleTimeString());
+    },
+    warn() {
+      console.warn("⚠ 这是一条警告：你的奶茶快喝完了。");
+      show("w", "⚠ 这是一条警告：你的奶茶快喝完了。");
+    },
+    error() {
+      console.error("✖ 这是一条错误：找不到你的作业本。");
+      show("e", "✖ 这是一条错误：找不到你的作业本。");
+    },
+    table() {
+      const data = [
+        { 水果: "苹果", 价格: 5, 库存: 30 },
+        { 水果: "香蕉", 价格: 3, 库存: 12 },
+        { 水果: "西瓜", 价格: 20, 库存: 4 },
+      ];
+      console.table(data);
+      show("i", "📊 (index) | 水果 | 价格 | 库存\n   0      | 苹果 |  5   |  30\n   1      | 香蕉 |  3   |  12\n   2      | 西瓜 |  20  |  4");
+    },
+    crash() {
+      show("e", "Uncaught TypeError: Cannot read properties of undefined (reading '名字')\n→ 去真正的 Console 看看，红字右边还有出错的文件名和行号，点它能跳到代码！");
+      // 故意访问一个不存在的东西的属性，制造一个真正的报错
+      setTimeout(() => { const 用户 = undefined; return 用户.名字; }, 0);
+    },
+    clear() {
+      console.clear();
+      mirror.innerHTML = '<div class="empty">// 已清空</div>';
+    },
+  };
+  document.querySelectorAll("[data-log]").forEach(b => b.addEventListener("click", () => actions[b.dataset.log]()));
+})();
+
+/* ---------- 第 9 节：网络请求演示 ---------- */
+(function () {
+  const tbody = document.getElementById("net-tbody");
+  const result = document.getElementById("net-result");
+  let firstRow = true;
+
+  function addRow(name, status, type, size, ms) {
+    if (firstRow) { tbody.innerHTML = ""; firstRow = false; }
+    const cls = status === "失败" ? "sx" : "s" + String(status)[0];
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${escapeHTML(name)}</td><td class="${cls}">${escapeHTML(status)}</td><td>${type}</td><td>${size}</td><td>${ms} ms</td>` +
+      `<td><div class="bar" style="width:${Math.min(100, Math.max(3, ms / 6))}%"></div></td>`;
+    tbody.prepend(tr);
+    tr.classList.add("flash");
+  }
+
+  async function doFetch(url, label) {
+    const t0 = performance.now();
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      const text = await res.text();
+      const ms = Math.round(performance.now() - t0);
+      addRow(label, res.status, "fetch", text.length + " B", ms);
+      return { res, text };
+    } catch (e) {
+      const ms = Math.round(performance.now() - t0);
+      addRow(label, "失败", "fetch", "0 B", ms);
+      console.error("请求失败：", e.message, "（如果你是双击本地文件打开的，这是正常的，见下方黄色提示）");
+      throw e;
+    }
+  }
+
+  const actions = {
+    async ok() {
+      try {
+        const { res, text } = await doFetch("data.json?t=" + Date.now(), "data.json");
+        if (res.ok) {
+          const data = JSON.parse(text);
+          result.innerHTML = "✅ " + escapeHTML(data.message) + "<br><span class='muted'>" + escapeHTML(data.tip) + "</span>";
+          console.log("从服务器拿到的数据：", data);
+        }
+      } catch (e) { result.innerHTML = "❌ 请求失败了。打开 Console 看看红字说了什么。"; }
+    },
+    img() {
+      const url = "assets/cat.svg?t=" + Date.now();
+      const t0 = performance.now();
+      const img = new Image();
+      img.onload = () => {
+        addRow("cat.svg", 200, "svg+xml", "≈1 kB", Math.round(performance.now() - t0));
+        result.innerHTML = "🖼 图片加载完成：<img src='" + url + "' alt='' style='width:48px;vertical-align:middle'> 在 Network 里点这一行，Preview 标签会直接显示这张图。";
+      };
+      img.onerror = () => {
+        addRow("cat.svg", "失败", "img", "0 B", Math.round(performance.now() - t0));
+        result.innerHTML = "❌ 图片加载失败。";
+      };
+      img.src = url;
+    },
+    async "404"() {
+      try {
+        await doFetch("this-file-does-not-exist.json?t=" + Date.now(), "this-file-does-not-exist.json");
+        result.innerHTML = "🙅 服务器回答 <b>404 Not Found</b>：没这个文件。看 Network 里那一行是不是红色的？Console 里通常也会多一条红字。";
+      } catch (e) { result.innerHTML = "❌ 请求没能发出去。打开 Console 看看原因。"; }
+    },
+    async many() {
+      result.textContent = "🚀 同时发出 5 个请求……去 Network 的「瀑布」列看看它们是不是几乎同时开始的。";
+      await Promise.allSettled([1, 2, 3, 4, 5].map(i => doFetch("data.json?n=" + i + "&t=" + Date.now(), "data.json?n=" + i)));
+    },
+  };
+  document.querySelectorAll("[data-net]").forEach(b => b.addEventListener("click", () => actions[b.dataset.net]()));
+})();
+
+/* ---------- 第 10 节：断点调试演示 ---------- */
+function 计算总价(price, count) {
+  debugger; // ← 打开开发者工具时，代码会在这里暂停
+  const subtotal = price * count;       // 单价 × 数量
+  const discount = count >= 3 ? 5 : 0;  // 买满 3 杯减 5 元
+  const total = subtotal - discount;
+  return total;
+}
+document.getElementById("calc-btn").addEventListener("click", () => {
+  const total = 计算总价(16, 3);
+  document.getElementById("calc-out").textContent = "总价：" + total + " 元（16 × 3 − 5）";
+  console.log("计算完成，总价是", total);
+});
+
+/* ---------- 第 11 节：本地存储演示 ---------- */
+(function () {
+  const input = document.getElementById("name-input");
+  const out = document.getElementById("greet-out");
+  function render() {
+    const name = storeGet("visitorName");
+    out.textContent = name ? "👋 欢迎回来，" + name + "！我记得你。" : "我还不认识你。";
+  }
+  document.getElementById("save-name").addEventListener("click", () => {
+    const v = input.value.trim();
+    if (!v) { input.focus(); return; }
+    storeSet("visitorName", v);
+    render();
+  });
+  document.getElementById("clear-name").addEventListener("click", () => { storeDel("visitorName"); render(); });
+  render();
+  try { document.cookie = "visited_lesson=yes; max-age=31536000; path=/; SameSite=Lax"; } catch (e) {}
+  try { sessionStorage.setItem("openedAt", new Date().toLocaleString()); } catch (e) {}
+})();
+
+/* ---------- 第 12 节：故意卡顿 ---------- */
+document.getElementById("jank-btn").addEventListener("click", () => {
+  const end = performance.now() + 1000;
+  while (performance.now() < end) { /* 什么也不做，就是霸占 CPU 1 秒 */ }
+  console.warn("🐢 刚才网页卡了 1 秒。在这 1 秒里，你点什么都没反应——因为 JS 占住了浏览器。");
+});
+
+/* ---------- 第 13 节：小测验 ---------- */
+(function () {
+  const qs = [
+    { q: "网页的本质是什么？", a: ["一张图片", "一段写好的文字（代码），由浏览器画出来", "一个手机 App"], c: 1,
+      why: "网页就是一段文字文件。按 Ctrl+U 就能看到。" },
+    { q: "负责网页「长什么样」（颜色、字体、排版）的是？", a: ["HTML", "CSS", "JavaScript"], c: 1,
+      why: "CSS 是衣服；HTML 是骨架；JS 是动作。" },
+    { q: "网址 https://abc.com/news?id=7#top 中，哪部分不会发给服务器？", a: ["/news", "?id=7", "#top"], c: 2,
+      why: "# 后面的锚点只在浏览器里用来定位页面位置。" },
+    { q: "网页上某个按钮点了没反应，想看看是不是出错了，先去哪个面板？", a: ["控制台 Console", "应用 Application", "Lighthouse"], c: 0,
+      why: "报错会以红字出现在 Console 里。" },
+    { q: "在 Network 面板看到一行状态是 404，意思是？", a: ["成功", "服务器坏了", "找不到这个文件"], c: 2,
+      why: "4xx 是请求方的问题，404 是 Not Found。5xx 才是服务器坏了。" },
+    { q: "你用 F12 把网页上的余额改成了 999999，会怎样？", a: ["银行账户真的变多了", "只是你电脑上显示变了，刷新就恢复", "会被封号"], c: 1,
+      why: "你改的是自己浏览器里的副本，服务器上的数据没变。" },
+    { q: "有人让你在控制台粘贴一段代码「领红包」，你应该？", a: ["赶紧粘贴", "拒绝，这可能是骗局（Self-XSS）", "先粘贴一半试试"], c: 1,
+      why: "陌生代码会以你的身份执行，可能盗号。" },
+    { q: "网站「记住我已登录」，通常靠的是？", a: ["Cookie", "CSS", "404"], c: 0,
+      why: "Cookie 会随每次请求自动带给服务器，最常用来保持登录。可以在 Application 面板里看到。" },
+  ];
+  const box = document.getElementById("quiz-box");
+  const scoreEl = document.getElementById("quiz-score");
+  let answered = 0, right = 0;
+  qs.forEach((item, qi) => {
+    const div = document.createElement("div");
+    div.className = "quiz-q";
+    div.innerHTML = `<p>${qi + 1}. ${item.q}</p>` +
+      item.a.map((t, ai) => `<label><input type="radio" name="q${qi}" value="${ai}"> ${t}</label>`).join("") +
+      `<div class="why">💡 ${item.why}</div>`;
+    div.addEventListener("change", e => {
+      if (div.classList.contains("done")) return;
+      const pick = +e.target.value;
+      div.classList.add("done");
+      const labels = div.querySelectorAll("label");
+      labels[item.c].classList.add("right");
+      if (pick !== item.c) labels[pick].classList.add("wrong"); else right++;
+      div.querySelectorAll("input").forEach(i => i.disabled = true);
+      answered++;
+      if (answered === qs.length) {
+        scoreEl.textContent = `得分：${right} / ${qs.length} ` + (right === qs.length ? "🏆 满分！你已经比大多数人更懂网页了。" : right >= 6 ? "👍 很棒！" : "📚 回头再看看对应章节吧。");
+      }
+    });
+    box.appendChild(div);
+  });
+})();
+</script>
+</body>
+</html>
