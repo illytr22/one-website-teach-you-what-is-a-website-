@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="de" data-root="../">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Was ist eine Webseite</title>
+<meta name="description" content="Für absolute Anfänger: eine Webseite, die erklärt, was eine Webseite ist und wie man sie mit den F12-Entwicklertools (Elemente, Konsole, Netzwerk, Quellen, Anwendung, Leistung) durchschaut.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="alternate" hreflang="zh" href="../index.html">
+<link rel="alternate" hreflang="en" href="../en/index.html">
+<link rel="alternate" hreflang="de" href="index.html">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#top">🌐 <span class="brand-text">Was ist eine Webseite</span></a>
+    <div class="progress" aria-hidden="true"><div id="progress-bar"></div></div>
+    <nav class="lang-switch" aria-label="Sprache">
+      <a href="../index.html" hreflang="zh" lang="zh">中文</a>
+      <a href="../en/index.html" hreflang="en" lang="en">EN</a>
+      <a href="index.html" hreflang="de" lang="de" aria-current="true">DE</a>
+    </nav>
+    <button class="theme-btn" id="theme-btn" type="button" aria-label="Hell/Dunkel umschalten">🌓</button>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <nav class="toc" aria-label="Inhalt">
+    <div class="toc-group">Teil 1 · Webseiten</div>
+    <ol id="toc-list">
+      <li><a href="#what">Was ist eine Webseite?</a></li>
+      <li><a href="#url">URLs lesen</a></li>
+      <li><a href="#journey">Nach dem Enter-Drücken</a></li>
+      <li><a href="#trio">Die drei Geschwister</a></li>
+      <li><a href="#playground">Selbst eine Seite bauen</a></li>
+      <li class="toc-group" style="counter-increment:none">Teil 2 · F12</li>
+      <li><a href="#f12">DevTools öffnen</a></li>
+      <li><a href="#elements">Elemente</a></li>
+      <li><a href="#console">Konsole</a></li>
+      <li><a href="#network">Netzwerk</a></li>
+      <li><a href="#sources">Quellen</a></li>
+      <li><a href="#application">Anwendung</a></li>
+      <li><a href="#more">Leistung · Geräte · Check</a></li>
+      <li class="toc-group" style="counter-increment:none">Abschluss</li>
+      <li><a href="#quiz">Quiz</a></li>
+      <li><a href="#glossary">Spickzettel</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <h1>Eine Webseite,<br>die dir erklärt, was eine Webseite ist.</h1>
+      <p class="lead">Keine Vorkenntnisse nötig. Die Seite, die du gerade liest, ist selbst das Lehrbuch: Worüber du liest, das kannst du hier direkt auseinandernehmen. In der zweiten Hälfte öffnen wir die versteckten „Entwicklertools“ des Browsers (Taste <kbd>F12</kbd>), schauen uns das Skelett der Seite an, reden mit ihr und beobachten jedes Paket, das sie übers Internet verschickt und empfängt.</p>
+      <div class="badges">
+        <span class="badge">⏱ Etwa 40 Minuten</span>
+        <span class="badge">💻 Am besten am Computer mit Chrome / Edge / Firefox</span>
+        <span class="badge">🧪 In jedem Abschnitt etwas zum Ausprobieren</span>
+      </div>
+    </header>
+
+    <!-- ============ 1 ============ -->
+    <section class="lesson" id="what">
+      <h2><span class="num">1</span>Was ist eine Webseite eigentlich?</h2>
+      <p class="sub">In einem Satz: <b>Eine Webseite ist eine Textdatei, und der Browser macht daraus das, was du siehst.</b></p>
+
+      <p>Vielleicht denkst du, eine Webseite sei ein Bild oder etwas Geheimnisvolles. Sie ist viel schlichter: Eine Webseite ist im Kern <b>ein geschriebener Text</b>, der mit vereinbarten Zeichen sagt: „Das ist eine Überschrift“, „Hier kommt ein Bild hin“, „Dieser Button ist rot“.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div style="font-size:30px">📄 → 🖥️</div>
+          <b>Ein Vergleich: Noten und Pianist</b>
+          <p class="small muted" style="margin:4px 0 0">Die Webseiten-Datei ist wie ein <b>Notenblatt</b> – nur Zeichen auf Papier. Der Browser ist der <b>Pianist</b>, der daraus Musik macht. Verschiedene Pianisten spielen dieselben Noten leicht unterschiedlich – deshalb sieht eine Seite in verschiedenen Browsern manchmal etwas anders aus.</p>
+        </div>
+        <div class="card">
+          <div style="font-size:30px">🏪 ↔ 🧑</div>
+          <b>Woher kommen Webseiten?</b>
+          <p class="small muted" style="margin:4px 0 0">Webseiten-Dateien liegen auf Computern irgendwo auf der Welt, die immer eingeschaltet sind. Diese heißen <b>Server</b>. Dein Browser ist der <b>Client</b>. Eine Seite öffnen = dein Browser <i>fragt</i> einen Server nach einer Datei, und der Server <i>gibt</i> sie ihm.</p>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="task-head">🧪 Ausprobieren: den „Originaltext“ dieser Seite ansehen</div>
+        <ol>
+          <li>Mache einen <b>Rechtsklick</b> auf eine leere Stelle dieser Seite und wähle „<b>Seitenquelltext anzeigen</b>“ (oder <kbd>Strg</kbd>+<kbd>U</kbd>, am Mac <kbd>⌘</kbd>+<kbd>⌥</kbd>+<kbd>U</kbd>).</li>
+          <li>Ein neuer Tab öffnet sich, voller Text und spitzer Klammern – <b>das ist genau die Seite, die du gerade liest, in ihrer wahren Form</b>.</li>
+          <li>Drücke <kbd>Strg</kbd>+<kbd>F</kbd> und suche nach „Notenblatt“. Du findest den Absatz von oben.</li>
+        </ol>
+        <p class="small muted" style="margin:0">Keine Sorge, wenn du nichts verstehst. Wichtig ist nur: Eine Webseite ist wirklich bloß Text.</p>
+      </div>
+
+      <div class="note"><strong>💡 Webseite, Website, Browser, Internet – was ist der Unterschied?</strong>
+        Eine <b>Webseite</b> ist eine einzelne Seite. Eine <b>Website</b> ist eine Sammlung zusammengehöriger Seiten (ein Shop hat Startseite, Produktseiten, Warenkorb). Ein <b>Browser</b> ist das Programm zum Anschauen (Chrome, Edge, Safari, Firefox). Das <b>Internet</b> ist das riesige Netz, das die Computer der Welt verbindet; Webseiten sind nur eins von vielen Dingen darin (Chatnachrichten und Onlinespiele laufen auch darüber).
+      </div>
+    </section>
+
+    <!-- ============ 2 ============ -->
+    <section class="lesson" id="url">
+      <h2><span class="num">2</span>URLs lesen</h2>
+      <p class="sub">Eine URL (Webadresse) ist die „Hausadresse“ einer Seite: Sie sagt dem Browser, wohin er gehen und welche Datei er holen soll.</p>
+
+      <p>Füge unten eine beliebige URL ein (z. B. aus deiner Adressleiste kopiert) – sie wird automatisch in Teile zerlegt:</p>
+      <div class="card">
+        <input type="text" id="url-input" value="https://www.example.com:443/shop/schuhe.html?farbe=rot&groesse=42#bewertungen" aria-label="URL eingeben" spellcheck="false">
+        <div class="url-parts" id="url-parts"></div>
+        <div class="small muted" id="url-explain" style="margin-top:10px"></div>
+      </div>
+
+      <div class="table-wrap"><table>
+        <tr><th>Teil</th><th>Was es ist</th><th>Vergleich aus dem Alltag</th></tr>
+        <tr><td><span class="pill" style="background:var(--purple-soft);color:var(--purple)">Protokoll</span> <code>https://</code></td><td>In welcher „Sprache“ mit dem Server geredet wird. Das s in <code>https</code> steht für <b>sicher (verschlüsselt)</b>: Niemand unterwegs kann mitlesen.</td><td>Paket per „versiegeltem Kurier“ statt Postkarte</td></tr>
+        <tr><td><span class="pill" style="background:var(--accent-soft);color:var(--accent)">Domain</span> <code>www.example.com</code></td><td>Der Name des Servers. Computer finden sich eigentlich über Zahlen (IP-Adressen); Domains sind Namen für Menschen.</td><td>„Hauptstraße 88“</td></tr>
+        <tr><td><span class="pill" style="background:var(--green-soft);color:var(--green)">Pfad</span> <code>/shop/schuhe.html</code></td><td>Welche Datei bzw. Seite auf dem Server.</td><td>„3. Stock, Zimmer 302“</td></tr>
+        <tr><td><span class="pill" style="background:var(--orange-soft);color:var(--orange)">Parameter</span> <code>?farbe=rot</code></td><td>Zusätzliche Wünsche, beginnen mit <code>?</code>, mehrere werden mit <code>&amp;</code> verbunden.</td><td>„Ohne Zwiebeln, bitte“ bei der Essensbestellung</td></tr>
+        <tr><td><span class="pill" style="background:var(--red-soft);color:var(--red)">Anker</span> <code>#bewertungen</code></td><td>Eine Stelle auf der Seite. <b>Wird nie an den Server geschickt</b> – sagt nur dem Browser, wohin er scrollen soll.</td><td>Ein Lesezeichen im Buch</td></tr>
+      </table></div>
+
+      <div class="task">
+        <div class="task-head">🧪 Ausprobieren: Anker in Aktion</div>
+        <p style="margin:0">Schau dir das Inhaltsverzeichnis links an: Bei jedem Klick erscheint am Ende der Adressleiste etwas wie <code>#console</code>, und die Seite springt dorthin, ohne neu zu laden. Ändere jetzt das Ende der Adressleiste in <code>#network</code> und drücke Enter.</p>
+      </div>
+    </section>
+
+    <!-- ============ 3 ============ -->
+    <section class="lesson" id="journey">
+      <h2><span class="num">3</span>Was passiert, nachdem du Enter drückst?</h2>
+      <p class="sub">Vom Enter-Drücken bis zur fertigen Seite vergeht meist weniger als eine Sekunde. Wir spielen es 100-mal langsamer ab.</p>
+
+      <button class="btn primary" id="journey-play" type="button">▶ Diese Sekunde abspielen</button>
+      <div class="journey" id="journey-steps" style="margin-top:12px">
+        <div class="step"><div class="ico">⌨️</div><div><b>① Du gibst die URL ein und drückst Enter</b><span>Der Browser hat jetzt die „Hausadresse“.</span></div></div>
+        <div class="step"><div class="ico">📒</div><div><b>② Im Telefonbuch nachschlagen (DNS)</b><span>Der Browser fragt einen DNS-Server: „Welche Nummer hat www.example.com?“ und bekommt eine IP-Adresse wie <code>93.184.215.14</code>.</span></div></div>
+        <div class="step"><div class="ico">🤝</div><div><b>③ Verbindung aufbauen</b><span>Browser und Server „geben sich die Hand“. Bei https vereinbaren sie außerdem einen Geheimcode für die Verschlüsselung.</span></div></div>
+        <div class="step"><div class="ico">📨</div><div><b>④ Anfrage senden (Request)</b><span>„Hallo, ich hätte gern /shop/schuhe.html. Ich bin Chrome und verstehe Deutsch.“</span></div></div>
+        <div class="step"><div class="ico">📦</div><div><b>⑤ Der Server antwortet (Response)</b><span>„Status 200, bitte schön!“ und schickt die HTML-Datei zurück. Gibt es die Datei nicht, kommt der berühmte <b>404</b>.</span></div></div>
+        <div class="step"><div class="ico">🔁</div><div><b>⑥ Der Browser liest das HTML und braucht noch mehr</b><span>„Hier fehlen ein Bild, ein Stylesheet, ein Skript …“ – also schickt er viele weitere Anfragen. Eine Seite braucht oft Dutzende oder Hunderte!</span></div></div>
+        <div class="step"><div class="ico">🎨</div><div><b>⑦ Die Seite zeichnen</b><span>Der Browser kombiniert Skelett (HTML) und Kleidung (CSS), malt alles auf den Bildschirm und führt dann die Bewegung (JavaScript) aus – jetzt kann man klicken und es bewegt sich.</span></div></div>
+      </div>
+      <div class="note ok"><strong>📌 Merke dir diese zwei Wörter: Anfrage (Request) und Antwort (Response)</strong>
+        Das ganze Web ist ein ständiges Frage-und-Antwort-Spiel. Gleich im <b>Netzwerk</b>-Panel der F12-Tools siehst du jede Frage und jede Antwort mit eigenen Augen.
+      </div>
+    </section>
+
+    <!-- ============ 4 ============ -->
+    <section class="lesson" id="trio">
+      <h2><span class="num">4</span>Die drei Geschwister: HTML, CSS, JavaScript</h2>
+      <p class="sub">Fast jede Webseite besteht aus diesen drei Dingen. Am leichtesten merkt man sie sich mit einem Menschen als Vergleich.</p>
+
+      <div class="grid-3 trio">
+        <div class="card"><div class="emoji">🦴</div><h4>HTML <span class="pill html">Skelett</span></h4><p class="small" style="margin:0">Bestimmt, <b>was</b> auf der Seite ist: Überschriften, Absätze, Bilder, Buttons, Links. Inhalte werden in <code>&lt;Tags&gt;</code> verpackt.</p></div>
+        <div class="card"><div class="emoji">👗</div><h4>CSS <span class="pill css">Kleidung</span></h4><p class="small" style="margin:0">Bestimmt, <b>wie es aussieht</b>: Farben, Schriften, Größen, Positionen, runde Ecken, Schatten, Animationen.</p></div>
+        <div class="card"><div class="emoji">💃</div><h4>JavaScript <span class="pill js">Bewegung</span></h4><p class="small" style="margin:0">Bestimmt, <b>was die Seite kann</b>: was beim Klick passiert, Nachrichten live aktualisieren, Formulare prüfen, Spiele. Kurz „JS“.</p></div>
+      </div>
+
+      <h3>Sieh selbst: Schicht für Schicht</h3>
+      <p>Unten ist eine kleine Visitenkarte. Nimm den Haken bei CSS weg und sieh, wie eine Seite „ohne Kleidung“ aussieht; ohne JS reagiert der Button nicht mehr.</p>
+      <div class="layer-toggles" style="margin-bottom:10px">
+        <label><input type="checkbox" checked disabled> <span class="pill html">HTML</span> Skelett (Pflicht)</label>
+        <label><input type="checkbox" id="tg-css" checked> <span class="pill css">CSS</span> Kleidung</label>
+        <label><input type="checkbox" id="tg-js" checked> <span class="pill js">JS</span> Bewegung</label>
+      </div>
+      <div class="layer-demo styled" id="layer-demo">
+        <div class="profile">
+          <img src="../assets/cat.svg" alt="Gesicht einer roten Katze">
+          <div>
+            <h4>Kater Karotte</h4>
+            <p>Beruf: Nickerchen · Hobby: Essen</p>
+            <button type="button" id="like-btn">❤ Gefällt mir <span id="like-count">0</span></button>
+          </div>
+        </div>
+      </div>
+
+      <details>
+        <summary>Die drei Code-Teile hinter dieser Karte ansehen</summary>
+<pre><code><span class="t-com">&lt;!-- HTML: was da ist --&gt;</span>
+<span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-str">"profile"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;img</span> <span class="t-attr">src</span>=<span class="t-str">"cat.svg"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;h4&gt;</span>Kater Karotte<span class="t-tag">&lt;/h4&gt;</span>
+  <span class="t-tag">&lt;button&gt;</span>❤ Gefällt mir<span class="t-tag">&lt;/button&gt;</span>
+<span class="t-tag">&lt;/div&gt;</span></code></pre>
+<pre><code><span class="t-com">/* CSS: wie es aussieht */</span>
+<span class="t-tag">.profile img</span> { <span class="t-attr">border-radius</span>: <span class="t-str">50%</span>; }      <span class="t-com">/* rundes Bild */</span>
+<span class="t-tag">.profile button</span> { <span class="t-attr">background</span>: <span class="t-str">#ff5a5f</span>; } <span class="t-com">/* roter Button */</span></code></pre>
+<pre><code><span class="t-com">// JavaScript: was es tut</span>
+<span class="t-key">let</span> count = 0;
+button.<span class="t-attr">onclick</span> = () =&gt; {
+  count = count + 1;             <span class="t-com">// pro Klick eins mehr</span>
+  countText.textContent = count; <span class="t-com">// neue Zahl auf die Seite schreiben</span>
+};</code></pre>
+      </details>
+
+      <h3>HTML-Tags: die Bausteine der Seite</h3>
+      <p>In HTML wird jeder Inhalt in ein Tag-Paar verpackt: <code>&lt;Anfang&gt;</code>Inhalt<code>&lt;/Ende&gt;</code>. Die häufigsten:</p>
+      <div class="table-wrap"><table>
+        <tr><th>Tag</th><th>Bedeutung</th><th>Beispiel</th></tr>
+        <tr><td><code>&lt;h1&gt;</code>–<code>&lt;h6&gt;</code></td><td>Überschriften, h1 ist die größte</td><td><code>&lt;h1&gt;Mein Blog&lt;/h1&gt;</code></td></tr>
+        <tr><td><code>&lt;p&gt;</code></td><td>Absatz (paragraph)</td><td><code>&lt;p&gt;Heute ist schönes Wetter.&lt;/p&gt;</code></td></tr>
+        <tr><td><code>&lt;a&gt;</code></td><td>Link; <code>href</code> gibt das Ziel an</td><td><code>&lt;a href="https://..."&gt;Klick&lt;/a&gt;</code></td></tr>
+        <tr><td><code>&lt;img&gt;</code></td><td>Bild; braucht kein End-Tag</td><td><code>&lt;img src="katze.png"&gt;</code></td></tr>
+        <tr><td><code>&lt;button&gt;</code></td><td>Button</td><td><code>&lt;button&gt;Absenden&lt;/button&gt;</code></td></tr>
+        <tr><td><code>&lt;div&gt;</code></td><td>Eine „Kiste“ zum Gruppieren</td><td><code>&lt;div&gt;...&lt;/div&gt;</code></td></tr>
+      </table></div>
+      <p class="small muted">Dinge im Tag wie <code>src</code>, <code>href</code> und <code>class</code> heißen <b>Attribute</b> – Zusatzinfos zu diesem Baustein.</p>
+    </section>
+
+    <!-- ============ 5 ============ -->
+    <section class="lesson" id="playground">
+      <h2><span class="num">5</span>Selbst eine Webseite bauen</h2>
+      <p class="sub">Links den Code ändern, rechts sofort das Ergebnis sehen. Kaputt gemacht? Einfach „Zurücksetzen“.</p>
+
+      <div class="playground">
+        <textarea class="code" id="pg-code" spellcheck="false" aria-label="HTML-Code-Editor"></textarea>
+        <iframe id="pg-frame" title="Vorschau" sandbox="allow-scripts allow-modals"></iframe>
+      </div>
+      <button class="btn" id="pg-reset" type="button">↺ Beispiel zurücksetzen</button>
+      <span class="small muted">Probier: Schreib deinen Namen ins <code>&lt;h1&gt;</code>; ändere <code>color: tomato</code> in <code>color: green</code>; klick den Button in der Vorschau.</span>
+
+      <div class="note"><strong>🏠 Auf dem eigenen Computer?</strong>
+        Öffne einen einfachen Texteditor (Editor unter Windows, TextEdit im Modus „reiner Text“ am Mac), füge den Code von links ein und speichere ihn als <code>meine-seite.html</code> (Endung <code>.html</code>, nicht <code>.txt</code>). Doppelklick auf die Datei – und dein Browser öffnet sie. Glückwunsch, das ist deine erste Webseite!
+      </div>
+    </section>
+
+    <hr class="part">
+    <p class="part-title">TEIL 2 · HINTER DEN KULISSEN: DIE F12-ENTWICKLERTOOLS</p>
+
+    <!-- ============ 6 ============ -->
+    <section class="lesson" id="f12">
+      <h2><span class="num">6</span>Die Entwicklertools (DevTools) öffnen</h2>
+      <p class="sub">Jeder Desktop-Browser hat einen eingebauten „Röntgenblick“. Entwickler nutzen ihn täglich. Er ist kostenlos und <b>kann nichts kaputt machen</b>.</p>
+
+      <div class="table-wrap"><table>
+        <tr><th>Dein Computer</th><th>Tastenkürzel</th><th>Oder mit der Maus</th></tr>
+        <tr><td>Windows / Linux</td><td><kbd>F12</kbd> oder <kbd>Strg</kbd>+<kbd>Umschalt</kbd>+<kbd>I</kbd></td><td rowspan="2">Rechtsklick auf die Seite → <b>Untersuchen</b> (Firefox: „Untersuchen“ / „Element untersuchen“)</td></tr>
+        <tr><td>Mac</td><td><kbd>⌘</kbd>+<kbd>⌥</kbd>+<kbd>I</kbd></td></tr>
+        <tr><td>Safari am Mac</td><td colspan="2">Zuerst unter Einstellungen → Erweitert „Funktionen für Webentwickler anzeigen“ aktivieren, dann wie oben</td></tr>
+        <tr><td>F12 tut nichts am Laptop?</td><td colspan="2">Versuch <kbd>Fn</kbd>+<kbd>F12</kbd> oder einfach <kbd>Strg</kbd>+<kbd>Umschalt</kbd>+<kbd>I</kbd></td></tr>
+      </table></div>
+      <p class="small muted">📱 Handy-Browser haben meist keine Entwicklertools. Mach diesen Teil bitte am Computer.</p>
+
+      <div class="note ok" id="devtools-status"><strong>🔍 Ich passe auf …</strong>Drück <kbd>F12</kbd>. Dieses Feld versucht zu reagieren, wenn du die DevTools öffnest (die Erkennung ist nicht 100 % zuverlässig).</div>
+
+      <h3>Die Tabs kennenlernen</h3>
+      <p>Nach dem Öffnen siehst du oben eine Reihe von Tabs. Die deutsche und die englische Oberfläche benennen sie unterschiedlich – klick unten durch:</p>
+      <div class="fake-devtools">
+        <div class="fd-tabs" id="fd-tabs" role="tablist"></div>
+        <div class="fd-body" id="fd-body"></div>
+      </div>
+      <div class="note"><strong>🌏 DevTools auf Deutsch umstellen?</strong>
+        Chrome / Edge: oben rechts in den DevTools auf ⚙️ (Einstellungen) → Preferences → Language → „Deutsch“, dann DevTools neu laden. Auf dieser Seite stehen deutsche und englische Namen nebeneinander.
+      </div>
+      <div class="note"><strong>🪟 Panel stört an dieser Stelle?</strong>
+        Klick oben rechts in den DevTools auf <b>⋮</b> und wähle unter „Andockposition“ (Dock side): unten, rechts oder als eigenes Fenster.
+      </div>
+    </section>
+
+    <!-- ============ 7 ============ -->
+    <section class="lesson" id="elements">
+      <h2><span class="num">7</span>Elemente (Elements): Skelett und Kleidung der Seite</h2>
+      <p class="sub">Hier siehst du die HTML-Struktur der Seite <i>in diesem Moment</i> (den sogenannten DOM-Baum) und rechts die CSS-Kleidung jedes Elements.</p>
+
+      <div class="grid-2">
+        <div class="card"><b>Links: der DOM-Baum</b><p class="small muted" style="margin:4px 0 0">Das ist HTML, aber live. Mit den ▶-Dreiecken auf- und zuklappen. Fährst du mit der Maus über eine Zeile, leuchtet der passende Teil der Seite auf.</p></div>
+        <div class="card"><b>Rechts: Stile (Styles)</b><p class="small muted" style="margin:4px 0 0">Alles CSS des gewählten Elements. Werte ändern oder Regeln abhaken – <b>das Ergebnis siehst du sofort</b>. Weiter unten: „Berechnet“ (Computed) und das Box-Modell.</p></div>
+      </div>
+
+      <div class="task">
+        <div class="task-head">🧪 Aufgabe 1: Mit dem Auswahlwerkzeug klicken</div>
+        <ol>
+          <li>Öffne die DevTools und klick oben links auf das <b>Symbol „Pfeil im Kasten“</b> ⬚↖ (oder <kbd>Strg</kbd>+<kbd>Umschalt</kbd>+<kbd>C</kbd>; Mac: <kbd>⌘</kbd>+<kbd>⇧</kbd>+<kbd>C</kbd>).</li>
+          <li>Fahr mit der Maus über die Seite: Farbige Markierungen erscheinen – das sind HTML-Elemente.</li>
+          <li>Klick auf die Überschrift unten. Das Elemente-Panel springt direkt zu ihrem Code.</li>
+        </ol>
+        <h3 id="editable-title" style="margin:10px 0 0">Ich bin eine Überschrift, die du ändern darfst</h3>
+      </div>
+
+      <div class="task">
+        <div class="task-head">🧪 Aufgabe 2: Text und Farbe ändern</div>
+        <ol>
+          <li>Im Elemente-Panel den Text der Überschrift <b>doppelklicken</b>, irgendetwas eintippen, Enter. Die Seite ändert sich sofort!</li>
+          <li>Rechts unter Stile <code>element.style { }</code> suchen, zwischen die geschweiften Klammern klicken, <code>color: red</code> tippen, Enter.</li>
+          <li>Dann probier <code>font-size: 50px</code> und <code>transform: rotate(5deg)</code>.</li>
+        </ol>
+        <p class="small muted" style="margin:0">⚠️ Nach dem Neuladen ist alles wieder wie vorher. Du hast nur <b>deine eigene Kopie auf deinem Computer</b> geändert; die Datei auf dem Server bleibt unberührt. „Mit F12 den Kontostand ändern“ täuscht also höchstens einen Screenshot – reicher wirst du nicht 😄</p>
+      </div>
+
+      <div class="task">
+        <div class="task-head">🕵️ Aufgabe 3: Das versteckte Geheimnis finden</div>
+        <p style="margin:0 0 6px">In diesem Abschnitt gibt es eine Box, die <b>per CSS versteckt</b> ist (<code>display: none</code>). Auf dem Bildschirm unsichtbar – aber im HTML ist sie da.</p>
+        <ol>
+          <li>Im Elemente-Panel <kbd>Strg</kbd>+<kbd>F</kbd> (Mac: <kbd>⌘</kbd>+<kbd>F</kbd>) drücken und nach <code>secret-box</code> suchen.</li>
+          <li>Auswählen, unter Stile <code>display: none</code> finden und <b>den Haken entfernen</b>.</li>
+          <li>Das Geheimnis erscheint genau hier 👇</li>
+        </ol>
+        <div class="secret-box" id="secret-box">
+          <div class="note ok" style="margin:8px 0 0"><strong>🎉 Gefunden! Das Passwort lautet „Webseiten haben keine Geheimnisse“.</strong>Deshalb dürfen <b>Passwörter und Schlüssel niemals in eine Webseite geschrieben werden</b> – Nutzer sehen alles darin.</div>
+        </div>
+      </div>
+
+      <h3>Das Box-Modell: Jedes Element ist eine Kiste</h3>
+      <p>Scroll unter Stile oder Berechnet nach unten, dann siehst du ineinander geschachtelte farbige Kästen:</p>
+      <div class="card" style="text-align:center;font-size:14px">
+        <div style="display:inline-block;background:var(--orange-soft);padding:10px 18px;border-radius:6px;border:1px dashed var(--orange)">margin (Außenabstand): Abstand zu anderen Kisten
+          <div style="background:#f5d78e33;border:6px solid #e6b85c;padding:10px 14px;margin-top:6px">border (Rahmen)
+            <div style="background:var(--green-soft);padding:10px 14px;margin-top:6px">padding (Innenabstand): Abstand zwischen Wand und Inhalt
+              <div style="background:var(--accent-soft);padding:8px 14px;margin-top:6px">content (Inhalt)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="small muted">Tipp: Rechtsklick auf ein Element im Elemente-Panel → „Status erzwingen“ (Force state) → <code>:hover</code> – so siehst du den Hover-Stil, ohne die Maus darüber halten zu müssen.</p>
+    </section>
+
+    <!-- ============ 8 ============ -->
+    <section class="lesson" id="console">
+      <h2><span class="num">8</span>Konsole (Console): direkt mit der Seite reden</h2>
+      <p class="sub">Die Konsole hat zwei Aufgaben: ① Die Seite schreibt hier Protokolle und Fehler hinein; ② du kannst JavaScript eintippen, und die Seite führt es sofort aus.</p>
+
+      <div class="note"><strong>👋 Die Seite redet die ganze Zeit mit dir</strong>
+        Öffne die DevTools und klick auf den Tab <b>Konsole / Console</b>. Scroll etwas nach oben: Diese Seite hat dir beim Laden eine Nachricht hinterlassen (eine bunte Begrüßung).
+      </div>
+
+      <h3>① Nachrichten der Seite an dich</h3>
+      <p>Klick die Buttons unten und schau dann in die Konsole. (Der schwarze Kasten unten ist ein „Spiegel“, damit du auch ohne F12 mitlesen kannst.)</p>
+      <div>
+        <button class="btn" data-log="log" type="button">Normale Nachricht console.log</button>
+        <button class="btn orange" data-log="warn" type="button">⚠ Warnung console.warn</button>
+        <button class="btn red" data-log="error" type="button">✖ Fehler console.error</button>
+        <button class="btn" data-log="table" type="button">📊 Tabelle console.table</button>
+        <button class="btn red" data-log="crash" type="button">💥 Echten Bug auslösen</button>
+        <button class="btn" data-log="clear" type="button">🧹 Leeren</button>
+      </div>
+      <div class="console-mirror" id="console-mirror"><div class="empty">// Klick die Buttons oben; Nachrichten erscheinen hier und in der echten Konsole</div></div>
+
+      <div class="grid-2" style="margin-top:14px">
+        <div class="card"><b style="color:var(--orange)">Gelb = Warnung</b><p class="small muted" style="margin:4px 0 0">„Nicht ideal, aber ich mache weiter.“ Normale Nutzer können das meist ignorieren.</p></div>
+        <div class="card"><b style="color:var(--red)">Rot = Fehler</b><p class="small muted" style="margin:4px 0 0">„Etwas ist kaputt.“ Wenn ein Button nicht reagiert, schau hier nach rotem Text. <b>Ein Screenshot davon</b> hilft Entwicklern, den Bug schnell zu finden. Ein Klick auf den Dateinamen rechts springt zur Codezeile.</p></div>
+      </div>
+      <p class="small muted">Über die Filterleiste oben in der Konsole kannst du nur Fehler (Errors), Warnungen (Warnings) oder Infos anzeigen oder nach Stichwort filtern.</p>
+
+      <h3>② Befehle von dir an die Seite</h3>
+      <p>Klick in die unterste Zeile der Konsole (die mit <code>&gt;</code>) und tippe Folgendes nacheinander ein, jeweils mit <kbd>Enter</kbd>:</p>
+      <div class="table-wrap"><table>
+        <tr><th>Eingabe</th><th>Was passiert</th></tr>
+        <tr><td><code>1 + 1</code></td><td>Die Konsole wird zum Taschenrechner und antwortet <code>2</code>. Probier <code>365 * 24</code> (Stunden pro Jahr).</td></tr>
+        <tr><td><code>"Hallo ".repeat(5)</code></td><td>Wiederholt „Hallo“ fünfmal.</td></tr>
+        <tr><td><code>alert("Ich kann jetzt programmieren")</code></td><td>Die Seite zeigt ein Pop-up.</td></tr>
+        <tr><td><code>document.title = "Titel geändert"</code></td><td>Schau dir den Namen im Browser-Tab an!</td></tr>
+        <tr><td><code>document.body.style.background = "pink"</code></td><td>Die ganze Seite wird rosa. Neu laden macht es rückgängig.</td></tr>
+        <tr><td><code>hallo("Alex")</code></td><td>Eine Funktion, die diese Seite extra für dich vorbereitet hat. Setz deinen Namen ein.</td></tr>
+        <tr><td><code>$0</code></td><td>Steht für <b>das gerade im Elemente-Panel ausgewählte Element</b>. Wähle dort zuerst etwas aus, dann tippe <code>$0.style.border = "3px solid red"</code>.</td></tr>
+        <tr><td><code>document.querySelectorAll("p").length</code></td><td>Zählt, wie viele Absätze diese Seite hat.</td></tr>
+      </table></div>
+      <p class="small muted">Tipps: <kbd>↑</kbd> holt den letzten Befehl zurück; <kbd>Tab</kbd> vervollständigt; <kbd>Umschalt</kbd>+<kbd>Enter</kbd> macht einen Zeilenumbruch ohne Ausführen; das 🚫-Symbol oben (oder <kbd>Strg</kbd>+<kbd>L</kbd>) leert die Anzeige.</p>
+
+      <div class="note danger"><strong>🚨 Sicherheitswarnung: Füge niemals Code von Fremden in die Konsole ein</strong>
+        Betrüger sagen Dinge wie „Füge das in die F12-Konsole ein, dann bekommst du Gratis-Münzen / siehst, wer dich blockiert hat / Premium freigeschaltet“. In Wahrheit läuft dieser Code <b>als du</b> auf der Website und kann deinen Login stehlen, in deinem Namen Nachrichten schicken oder Geld überweisen. Das nennt man „Self-XSS“. Deshalb verlangt Chrome beim ersten Einfügen, dass du <code>allow pasting</code> tippst – es schützt dich. <b>Führe nur Code aus, den du verstehst.</b>
+      </div>
+    </section>
+
+    <!-- ============ 9 ============ -->
+    <section class="lesson" id="network">
+      <h2><span class="num">9</span>Netzwerk (Network): jedes Paket der Seite beobachten</h2>
+      <p class="sub">Erinnerst du dich an „Anfrage“ und „Antwort“ aus Abschnitt 3? Das Netzwerk-Panel listet jede einzelne Anfrage als Zeile auf. Keine geht verloren.</p>
+
+      <div class="task">
+        <div class="task-head">🧪 Aufgabe 1: Alle Anfragen beim Laden einer Seite sehen</div>
+        <ol>
+          <li>DevTools öffnen und auf den Tab <b>Netzwerk / Network</b> klicken.</li>
+          <li>Die Liste ist vielleicht leer – das Netzwerk-Panel zeichnet nur Anfragen auf, die <b>nach dem Öffnen</b> passieren.</li>
+          <li>Drück <kbd>F5</kbd> zum Neuladen. Die Liste füllt sich sofort: Die erste Zeile ist meist die HTML-Datei selbst, danach Stylesheet, Skript, Bilder usw.</li>
+        </ol>
+      </div>
+
+      <div class="task">
+        <div class="task-head">🧪 Aufgabe 2: Eigene Anfragen erzeugen</div>
+        <p style="margin:0 0 8px">Lass das Netzwerk-Panel offen, klick die Buttons unten und beobachte die neuen Zeilen:</p>
+        <button class="btn green" data-net="ok" type="button">📥 Daten anfragen (200 OK)</button>
+        <button class="btn" data-net="img" type="button">🖼 Ein Bild laden</button>
+        <button class="btn red" data-net="404" type="button">❓ Fehlende Datei anfragen (404)</button>
+        <button class="btn" data-net="many" type="button">🚀 5 Anfragen auf einmal</button>
+        <div id="net-result" class="small" style="margin-top:8px"></div>
+        <div class="table-wrap" style="margin-top:10px"><table class="net-table">
+          <thead><tr><th>Name</th><th>Status</th><th>Typ (Type)</th><th>Größe (Size)</th><th>Zeit (Time)</th><th style="width:30%">Wasserfall</th></tr></thead>
+          <tbody id="net-tbody"><tr><td colspan="6" class="muted" style="font-family:inherit">(Eine Spiegeltabelle, die sich beim Klicken füllt; das echte Netzwerk-Panel zeigt viel mehr)</td></tr></tbody>
+        </table></div>
+      </div>
+
+      <h3>Was die Spalten bedeuten</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Spalte</th><th>Bedeutung</th></tr>
+        <tr><td>Name</td><td>Dateiname oder Adresse der Anfrage.</td></tr>
+        <tr><td>Status</td><td>Der Statuscode des Servers (siehe unten). Rot heißt: fehlgeschlagen.</td></tr>
+        <tr><td>Typ (Type)</td><td><code>document</code> die Seite selbst, <code>stylesheet</code> CSS, <code>script</code> JS, <code>img</code> / <code>svg</code> Bilder, <code>fetch</code>/<code>xhr</code> Daten, die die Seite per JS anfordert, <code>font</code> Schriften.</td></tr>
+        <tr><td>Größe (Size)</td><td>Wie viele Daten übertragen wurden. <code>(disk cache)</code> / <code>(memory cache)</code> heißt: Der Browser hat den Server gar nicht gefragt, sondern eine früher gespeicherte Kopie benutzt (den <b>Cache</b>).</td></tr>
+        <tr><td>Zeit (Time)</td><td>Wie lange es vom Senden bis zur vollständigen Antwort gedauert hat. ms = Millisekunden; 1000 ms = 1 Sekunde.</td></tr>
+        <tr><td>Wasserfall (Waterfall)</td><td>Eine Zeitleiste. Längere Balken sind langsamer; man sieht, welche Anfragen warten mussten und welche parallel liefen.</td></tr>
+      </table></div>
+
+      <h3>Statuscodes: die Antwort des Servers als Zahl</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Beginnt mit</th><th>Bedeutet ungefähr</th><th>Typische Beispiele</th></tr>
+        <tr><td><b style="color:var(--green)">2xx</b></td><td>Erfolg ✅</td><td><code>200 OK</code> alles gut</td></tr>
+        <tr><td><b style="color:var(--accent)">3xx</b></td><td>Geh woanders hin / nimm, was du hast ↪</td><td><code>301</code> dauerhaft umgezogen; <code>304 Not Modified</code> unverändert, nimm deine Cache-Kopie</td></tr>
+        <tr><td><b style="color:var(--orange)">4xx</b></td><td>Problem auf deiner (Client-)Seite 🙅</td><td><code>404</code> nicht gefunden; <code>403</code> verboten; <code>401</code> bitte einloggen; <code>429</code> zu viele Anfragen</td></tr>
+        <tr><td><b style="color:var(--red)">5xx</b></td><td>Problem beim Server 🔥</td><td><code>500</code> interner Serverfehler; <code>502</code>/<code>503</code> Server vorübergehend überlastet</td></tr>
+      </table></div>
+
+      <h3>Eine Zeile öffnen und ins Paket schauen</h3>
+      <p>Klick im Netzwerk-Panel <b>auf eine beliebige Zeile</b> (z. B. das eben angefragte <code>data.json</code>), dann öffnen sich rechts Details:</p>
+      <div class="grid-2">
+        <div class="card"><b>Header (Headers)</b><p class="small muted" style="margin:4px 0 0">Der „Versandschein“ auf dem Paket: URL, Methode (GET = holen, POST = abschicken), Statuscode, wie sich der Browser vorstellt (User-Agent), welcher Dateityp es laut Server ist (Content-Type) und mehr.</p></div>
+        <div class="card"><b>Vorschau (Preview)</b><p class="small muted" style="margin:4px 0 0">Die Antwort hübsch aufbereitet: JSON-Daten als aufklappbarer Baum, Bilder werden angezeigt.</p></div>
+        <div class="card"><b>Antwort (Response)</b><p class="small muted" style="margin:4px 0 0">Der rohe Inhalt, den der Server geschickt hat, Zeichen für Zeichen.</p></div>
+        <div class="card"><b>Zeitplan (Timing)</b><p class="small muted" style="margin:4px 0 0">Wofür die Zeit dieser Anfrage draufging: Warteschlange, DNS-Abfrage, Verbindungsaufbau, Warten auf den Server, Herunterladen …</p></div>
+      </div>
+
+      <h3>Ein paar sehr praktische Schalter</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Schalter</th><th>Wofür</th></tr>
+        <tr><td><b>Log beibehalten</b> (Preserve log)</td><td>Normalerweise wird die Liste beim Neuladen oder Seitenwechsel geleert; mit Haken bleibt sie.</td></tr>
+        <tr><td><b>Cache deaktivieren</b> (Disable cache)</td><td>Immer frisch vom Server holen. Praktisch bei „Ich habe meine Seite geändert, warum sehe ich das nicht?“</td></tr>
+        <tr><td><b>Keine Drosselung</b> (No throttling)</td><td>Im Drop-down <b>Slow 3G / 4G</b> wählen, um eine langsame Handyverbindung zu simulieren. Neu laden und zusehen, wie die Seite Stück für Stück erscheint. Danach zurückstellen!</td></tr>
+        <tr><td><b>Offline</b></td><td>So tun, als gäbe es kein Internet.</td></tr>
+        <tr><td>Filterleiste <b>All / Fetch/XHR / JS / CSS / Img …</b></td><td>Nur eine Art von Anfragen anzeigen.</td></tr>
+        <tr><td>🚫 / ⏺ roter Punkt</td><td>Liste leeren / Aufzeichnung pausieren.</td></tr>
+      </table></div>
+
+      <div class="note warn"><strong>🔒 Adresse beginnt mit file://?</strong>
+        Wenn du diese Seite per Doppelklick auf die HTML-Datei geöffnet hast, kann der Button „Daten anfragen“ fehlschlagen (aus Sicherheitsgründen dürfen lokale Dateien nicht einfach andere Dateien lesen). Auch das ist eine Lektion: Lies, was der rote Text in Konsole und Netzwerk sagt. Online (z. B. über GitHub Pages) funktioniert es.
+      </div>
+    </section>
+
+    <!-- ============ 10 ============ -->
+    <section class="lesson" id="sources">
+      <h2><span class="num">10</span>Quellen (Sources): den Code „anhalten“</h2>
+      <p class="sub">Das Quellen-Panel zeigt alle Dateien der Seite und kann JavaScript in einer Zeile <b>anhalten</b>, damit du Schritt für Schritt hindurchgehen kannst. Das nennt man „Debuggen mit Haltepunkten“.</p>
+
+      <p>Links die Dateiliste (die <code>index.html</code> dieser Seite, <code>assets/app.js</code> – dort steckt das ganze JavaScript –, <code>assets/cat.svg</code> usw.), in der Mitte der Code, rechts die Debug-Werkzeuge.</p>
+
+      <div class="task">
+        <div class="task-head">🧪 Aufgabe: Eine Berechnung mit debugger erwischen</div>
+        <p style="margin:0 0 6px">Der Button unten berechnet die Summe eines Warenkorbs. Im Code steht ein <code>debugger;</code> – eine „Pausentaste“, die <b>nur wirkt, solange die DevTools offen sind</b>.</p>
+        <ol>
+          <li>Lass die DevTools offen (egal welcher Tab).</li>
+          <li>Klick den Button unten. Die Seite „friert ein“, die DevTools springen zu Quellen und markieren die Zeile, in der angehalten wurde.</li>
+          <li>Fahr mit der Maus über Wörter wie <code>price</code> und <code>count</code>, um ihre aktuellen Werte zu sehen. Rechts unter „Bereich“ (Scope) stehen sie auch.</li>
+          <li>Mit <kbd>F10</kbd> (Schritt) Zeile für Zeile weiter, oder mit <kbd>F8</kbd> / ▶ fortsetzen.</li>
+        </ol>
+        <button class="btn primary" id="calc-btn" type="button">🧮 Summe für 3 Kaffee à 16 € (ab 3 Stück 5 € Rabatt)</button>
+        <span id="calc-out" style="margin-left:8px;font-weight:600"></span>
+      </div>
+      <p class="small muted">Es geht auch ohne <code>debugger</code>: Im Quellen-Panel eine Datei öffnen und links auf eine <b>Zeilennummer</b> klicken. Eine blaue Markierung ist ein Haltepunkt; nochmal klicken entfernt ihn.</p>
+    </section>
+
+    <!-- ============ 11 ============ -->
+    <section class="lesson" id="application">
+      <h2><span class="num">11</span>Anwendung (Application): was die Seite auf deinem Computer speichert</h2>
+      <p class="sub">Eine Seite kann Kleinigkeiten in deinem Browser ablegen, damit sie dich beim nächsten Mal wiedererkennt. In Firefox heißt dieses Panel „Web-Speicher“ (Storage).</p>
+
+      <div class="grid-3">
+        <div class="card"><b>🍪 Cookies</b><p class="small muted" style="margin:4px 0 0">Kleine Zettel, die <b>bei jeder Anfrage automatisch an den Server mitgeschickt werden</b>. Meist, um sich „du bist eingeloggt“ zu merken.</p></div>
+        <div class="card"><b>📦 Local Storage</b><p class="small muted" style="margin:4px 0 0">Ein lokales Schließfach, das auch nach dem Schließen des Browsers bleibt. Oft für Einstellungen wie den Dunkelmodus.</p></div>
+        <div class="card"><b>🗒 Session Storage</b><p class="small muted" style="margin:4px 0 0">Ein Notizzettel, der verschwindet, sobald du den Tab schließt.</p></div>
+      </div>
+
+      <div class="task">
+        <div class="task-head">🧪 Aufgabe: Die Seite soll sich an dich erinnern</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <input type="text" id="name-input" placeholder="Dein Name" style="max-width:240px">
+          <button class="btn primary" id="save-name" type="button">💾 Speichern</button>
+          <button class="btn" id="clear-name" type="button">🗑 Vergiss mich</button>
+        </div>
+        <div class="storage-out" id="greet-out"></div>
+        <ol>
+          <li>Namen eingeben, „Speichern“ klicken, dann <b>die Seite neu laden</b> – sie kennt dich noch!</li>
+          <li>DevTools → <b>Anwendung / Application</b> → links unter „Speicher“ (Storage) <b>Local Storage</b> aufklappen → die Adresse dieser Seite anklicken.</li>
+          <li>Du siehst eine Zeile <code>visitorName</code> mit deinem Namen als Wert. <b>Wert doppelklicken</b>, ändern, neu laden.</li>
+          <li>Unter Cookies gibt es außerdem einen Eintrag <code>visited_lesson</code> – ein kleiner Zettel, den diese Seite dir hinterlassen hat.</li>
+        </ol>
+      </div>
+
+      <div class="note warn"><strong>🧹 Was löscht „Cache und Cookies löschen“ eigentlich?</strong>
+        Genau diese Dinge. Danach vergessen Websites dich (neu einloggen, Einstellungen zurück auf Standard). Im Anwendung-Panel gibt es links unter „Speicher“ (Storage) den Button <b>Websitedaten löschen</b> (Clear site data), der nur die aktuelle Website betrifft.
+      </div>
+    </section>
+
+    <!-- ============ 12 ============ -->
+    <section class="lesson" id="more">
+      <h2><span class="num">12</span>Noch mehr Nützliches: Gerätemodus, Leistung, Check-up</h2>
+
+      <h3>📱 Gerätemodus: Der Computer spielt Handy</h3>
+      <p>Neben dem Auswahlwerkzeug oben links in den DevTools ist ein <b>Handy-+-Tablet-Symbol</b> (Kürzel <kbd>Strg</kbd>+<kbd>Umschalt</kbd>+<kbd>M</kbd>; Mac: <kbd>⌘</kbd>+<kbd>⇧</kbd>+<kbd>M</kbd>). Ein Klick, und die Seite schrumpft auf Handygröße. Oben kannst du ein Gerätemodell wählen und den Bildschirm drehen. Probier es jetzt: Auf dem Handy verschwindet das Inhaltsverzeichnis dieser Seite, und das Layout wird einspaltig. Solches Anpassen an den Bildschirm heißt <b>Responsive Design</b>.</p>
+
+      <h3>⚡ Leistung (Performance): Warum ruckelt die Seite?</h3>
+      <p>Klick den runden ⏺-Aufnahmeknopf, benutz die Seite ein paar Sekunden (z. B. hoch- und runterscrollen), dann Stopp. Du bekommst eine detaillierte Zeitleiste, womit der Browser jede Millisekunde beschäftigt war: Skripte ausführen (gelb), Stile und Layout berechnen (lila), Zeichnen (grün). Nicht schlimm, wenn du es nicht verstehst – wichtig ist nur: Ruckeln lässt sich aufzeichnen und analysieren.</p>
+      <button class="btn orange" id="jank-btn" type="button">🐢 Seite 1 Sekunde einfrieren</button>
+      <span class="small muted">Klick das während einer Leistungs-Aufnahme, dann siehst du einen großen gelben Block.</span>
+
+      <h3>🩺 Lighthouse: Check-up mit einem Klick</h3>
+      <p>Such oben in den DevTools <b>Lighthouse</b> (evtl. hinter <b>»</b> versteckt). Klick „Analyze page load“ (Seitenaufbau analysieren), und es bewertet die Seite von 0–100 in <b>Leistung, Barrierefreiheit, Best Practices und SEO</b> (Suchmaschinenfreundlichkeit) – samt Verbesserungstipps. Teste deine Lieblingsseiten!</p>
+
+      <h3>🔎 Alles durchsuchen: das Befehlsmenü</h3>
+      <p>In den DevTools <kbd>Strg</kbd>+<kbd>Umschalt</kbd>+<kbd>P</kbd> (Mac: <kbd>⌘</kbd>+<kbd>⇧</kbd>+<kbd>P</kbd>) drücken und jede Funktion suchen. Tippe <code>screenshot</code> und wähle „Capture full size screenshot“, um die <b>komplette lange Seite</b> aufzunehmen; mit <code>dark</code> kannst du den Dunkelmodus simulieren.</p>
+
+      <div class="table-wrap"><table>
+        <tr><th>Ich will …</th><th>Wohin</th></tr>
+        <tr><td>Farbe, Schrift oder Größe von etwas herausfinden</td><td>Elemente (mit dem Auswahlwerkzeug anklicken)</td></tr>
+        <tr><td>Wissen, warum ein Button nichts tut</td><td>Konsole (nach rotem Text suchen)</td></tr>
+        <tr><td>Herausfinden, warum eine Seite langsam ist / Bilder nicht laden</td><td>Netzwerk</td></tr>
+        <tr><td>Sehen, was eine Seite auf meinem Computer speichert</td><td>Anwendung</td></tr>
+        <tr><td>Einer ruckelnden Seite auf den Grund gehen</td><td>Leistung</td></tr>
+        <tr><td>Sehen, wie eine Seite auf dem Handy aussieht</td><td>Gerätemodus (📱-Symbol)</td></tr>
+        <tr><td>Eine Website bewerten</td><td>Lighthouse</td></tr>
+      </table></div>
+    </section>
+
+    <hr class="part">
+    <p class="part-title">ABSCHLUSS</p>
+
+    <!-- ============ 13 ============ -->
+    <section class="lesson" id="quiz">
+      <h2><span class="num">13</span>Quiz</h2>
+      <p class="sub">Du siehst sofort, ob du richtig liegst – und warum.</p>
+      <div id="quiz-box"></div>
+      <p class="score" id="quiz-score"></p>
+    </section>
+
+    <!-- ============ 14 ============ -->
+    <section class="lesson" id="glossary">
+      <h2><span class="num">14</span>Spickzettel</h2>
+      <div class="table-wrap"><table>
+        <tr><th>Begriff</th><th>In einem Satz</th></tr>
+        <tr><td>Browser</td><td>Das Programm, das Webseiten herunterlädt und „zeichnet“.</td></tr>
+        <tr><td>Server</td><td>Ein Computer, der Webseiten speichert und Anfragen beantwortet.</td></tr>
+        <tr><td>URL / Webadresse</td><td>Die Adresse von etwas im Web.</td></tr>
+        <tr><td>Domain</td><td>Ein einprägsamer Servername wie example.com.</td></tr>
+        <tr><td>DNS</td><td>Das Telefonbuch des Internets: übersetzt Domains in IP-Adressen.</td></tr>
+        <tr><td>HTTP / HTTPS</td><td>Die Regeln, nach denen Browser und Server reden; HTTPS ist verschlüsselt.</td></tr>
+        <tr><td>Anfrage / Antwort</td><td>Der Browser fragt nach etwas / der Server liefert es.</td></tr>
+        <tr><td>Statuscode</td><td>Die dreistellige Antwort des Servers, z. B. 200, 404, 500.</td></tr>
+        <tr><td>HTML</td><td>Skelett und Inhalt einer Seite.</td></tr>
+        <tr><td>CSS</td><td>Das Aussehen einer Seite.</td></tr>
+        <tr><td>JavaScript (JS)</td><td>Die Programmiersprache, die Seiten beweglich und interaktiv macht.</td></tr>
+        <tr><td>Tag / Element</td><td>Ein HTML-Baustein wie &lt;p&gt; oder &lt;img&gt;.</td></tr>
+        <tr><td>DOM</td><td>Der Elemente-Baum, den der Browser aus dem HTML im Speicher baut. Ändert JS ihn, ändert sich die Seite.</td></tr>
+        <tr><td>JSON</td><td>Ein verbreitetes Datenformat, das so aussieht: <code>{"name": "Karotte"}</code>.</td></tr>
+        <tr><td>Cache</td><td>Kopien von Dateien, die der Browser aufhebt, um sie nicht neu laden zu müssen.</td></tr>
+        <tr><td>Cookie / Local Storage</td><td>Kleine Daten, die eine Seite in deinem Browser ablegt.</td></tr>
+        <tr><td>Haltepunkt (Breakpoint)</td><td>Eine Stelle, an der der Code pausiert, damit du ihn untersuchen kannst.</td></tr>
+        <tr><td>Responsive Design</td><td>Seiten, die sich an Computer, Tablet und Handy anpassen.</td></tr>
+      </table></div>
+
+      <div class="note ok"><strong>🎓 Glückwunsch, du hast es geschafft!</strong>
+        Jetzt weißt du: Eine Webseite ist Text, den der Browser zeichnet; sie besteht aus HTML, CSS und JavaScript; und mit F12 siehst du ihr Skelett, redest mit ihr, beobachtest ihre Pakete und prüfst, was sie speichert. Drück beim nächsten Surfen einfach mal F12 – das Web sieht danach anders aus.<br>
+        Weiterlernen? Empfehlenswert sind der <a href="https://developer.mozilla.org/de/docs/Learn" target="_blank" rel="noopener">MDN-Lernbereich (Deutsch)</a> und die <a href="https://developer.chrome.com/docs/devtools?hl=de" target="_blank" rel="noopener">Chrome-DevTools-Dokumentation</a>.
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  Diese Seite besteht aus einer HTML-Datei, einem Stylesheet, einem Skript, einem Bild und einer Datendatei. Ohne Frameworks. Mit <kbd>Strg</kbd>+<kbd>U</kbd> siehst du alle ihre Geheimnisse.
+</footer>
+
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "message": "Congratulations! You just caught a real request in the Network panel 🎉",
+  "tip": "Click that row and look at the Headers, Preview and Response tabs.",
+  "fruits": ["apple", "banana", "watermelon"],
+  "learnedAt": "Your browser just fetched this data from the server"
+}

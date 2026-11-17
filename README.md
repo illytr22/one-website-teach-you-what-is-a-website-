@@ -2,6 +2,8 @@
 
 给**完全零基础**的人准备的单页教程。网页本身就是教材：边读边按 F12 拆开它。
 
+支持 **中文 / English / Deutsch** 三种语言，页面右上角可以随时切换，切换后会停留在同一节。
+
 ## 内容
 
 **第一部分 · 网页**
@@ -39,6 +41,20 @@ python3 -m http.server 8000
 
 ## 文件
 
-- `index.html`：全部内容、样式和脚本（无任何外部依赖）
-- `data.json`：给 Network 一节请求用的示例数据
-- `assets/cat.svg`：示例图片
+```
+index.html          中文版
+en/index.html       English
+de/index.html       Deutsch
+assets/style.css    三种语言共用的样式
+assets/app.js       三种语言共用的脚本（界面文字在文件开头的 I18N 字典里）
+assets/cat.svg      示例图片
+data.json           Network 一节请求用的示例数据（en/、de/ 下各有一份对应语言的）
+```
+
+没有使用任何框架或外部依赖。
+
+### 修改或新增语言
+
+- 页面正文：直接改对应语言的 `index.html`。
+- 按钮反馈、测验、控制台消息等由脚本生成的文字：改 `assets/app.js` 开头的 `I18N` 字典。
+- 新增一种语言：复制 `en/` 文件夹，翻译 `index.html` 和 `data.json`，把 `<html lang="..">` 改成新语言代码，在 `I18N` 里加一套文字，并在每个页面的 `.lang-switch` 里加一个链接。
