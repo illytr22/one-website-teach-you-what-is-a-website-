@@ -264,6 +264,112 @@ const I18N = {
 };
 const T = I18N[LANG] || I18N.zh;
 
+/* ---------- 动态星空背景 / Animated starry sky / Animierter Sternenhimmel ----------
+   一个铺满屏幕的 <canvas>：星星会闪烁、缓慢漂移，滚动时有视差，偶尔还有流星。
+   A full-screen <canvas>: stars twinkle and drift, shift with scrolling (parallax),
+   and the occasional shooting star flies past. */
+(function starfield() {
+  const canvas = document.createElement("canvas");
+  canvas.id = "sky";
+  canvas.setAttribute("aria-hidden", "true");
+  document.body.prepend(canvas);
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  const COLORS = ["255,255,255", "255,255,255", "255,255,255", "205,222,255", "255,236,210", "190,205,255"];
+  let w = 0, h = 0, stars = [], meteors = [], nextMeteor = 0, lastT = 0;
+
+  function makeStars() {
+    const count = Math.round(Math.min(480, Math.max(140, (w * h) / 3000)));
+    stars = Array.from({ length: count }, () => {
+      const depth = Math.random();                       // 0 = 远, 1 = 近 / far → near
+      return {
+        x: Math.random(), y: Math.random(),               // 用 0~1 的比例保存，窗口变化也不会乱
+        r: 0.35 + Math.pow(Math.random(), 4) * 1.9 + depth * 0.35,
+        depth,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.4 + Math.random() * 1.6,
+        color: COLORS[(Math.random() * COLORS.length) | 0],
+      };
+    });
+  }
+
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const widthChanged = innerWidth !== w;
+    w = innerWidth; h = innerHeight;
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // 手机上地址栏伸缩只改变高度，这时不重新生成星星，避免画面跳动
+    if (widthChanged || !stars.length) makeStars();
+    if (reduceMotion.matches) draw(0, 0);
+  }
+
+  function spawnMeteor(t) {
+    const fromLeft = Math.random() < 0.5;
+    const angle = (fromLeft ? 1 : -1) * (0.35 + Math.random() * 0.35);
+    const speed = 0.9 + Math.random() * 0.7;                 // 像素/毫秒 / px per ms
+    meteors.push({
+      x: fromLeft ? Math.random() * w * 0.6 : w * 0.4 + Math.random() * w * 0.6,
+      y: Math.random() * h * 0.35,
+      vx: Math.sin(angle) * speed, vy: Math.cos(angle) * speed * 0.55,
+      born: t, life: 700 + Math.random() * 500, len: 90 + Math.random() * 110,
+    });
+    nextMeteor = t + 2500 + Math.random() * 6000;
+  }
+
+  function draw(t, dt) {
+    ctx.clearRect(0, 0, w, h);
+    const scroll = reduceMotion.matches ? 0 : (window.scrollY || 0);
+
+    for (const s of stars) {
+      if (dt) s.x -= dt * (0.0000025 + s.depth * 0.000006);  // 缓慢向左漂移 / slow drift
+      if (s.x < 0) s.x += 1;
+      const x = s.x * w;
+      let y = (s.y * h - scroll * (0.03 + s.depth * 0.12)) % h; // 近处的星星滚得更快 = 视差
+      if (y < 0) y += h;
+      const twinkle = reduceMotion.matches ? 0.8 : 0.55 + 0.45 * Math.sin(t * 0.001 * s.speed + s.phase);
+      const a = (0.35 + s.depth * 0.65) * twinkle;
+      if (s.r > 1.3) { // 亮星加一圈光晕 / glow around bright stars
+        ctx.fillStyle = `rgba(${s.color},${a * 0.14})`;
+        ctx.beginPath(); ctx.arc(x, y, s.r * 3.2, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.fillStyle = `rgba(${s.color},${a})`;
+      ctx.beginPath(); ctx.arc(x, y, s.r, 0, Math.PI * 2); ctx.fill();
+    }
+
+    if (reduceMotion.matches) return;
+    if (t > nextMeteor) spawnMeteor(t);
+    meteors = meteors.filter(m => t - m.born < m.life);
+    for (const m of meteors) {
+      const age = (t - m.born) / m.life;
+      const hx = m.x + m.vx * (t - m.born), hy = m.y + m.vy * (t - m.born);
+      const len = Math.hypot(m.vx, m.vy);
+      const tx = hx - (m.vx / len) * m.len, ty = hy - (m.vy / len) * m.len;
+      const alpha = Math.sin(Math.PI * age);                  // 淡入再淡出 / fade in and out
+      const g = ctx.createLinearGradient(hx, hy, tx, ty);
+      g.addColorStop(0, `rgba(255,255,255,${alpha})`);
+      g.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.strokeStyle = g; ctx.lineWidth = 1.6; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(tx, ty); ctx.stroke();
+    }
+  }
+
+  function frame(t) {
+    const dt = lastT ? Math.min(t - lastT, 50) : 0;
+    lastT = t;
+    draw(t, dt);
+    if (!reduceMotion.matches) requestAnimationFrame(frame);
+  }
+
+  addEventListener("resize", resize);
+  reduceMotion.addEventListener?.("change", () => { lastT = 0; if (!reduceMotion.matches) requestAnimationFrame(frame); else draw(0, 0); });
+  resize();
+  nextMeteor = performance.now() + 1500;
+  if (!reduceMotion.matches) requestAnimationFrame(frame);
+})();
+
 /* ---------- 小工具：安全读写 localStorage / safe storage helpers ---------- */
 function storeGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
 function storeSet(key, val) { try { localStorage.setItem(key, val); } catch (e) {} }
